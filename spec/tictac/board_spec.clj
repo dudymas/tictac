@@ -12,6 +12,10 @@
   [:O nil :X]])
 
 (describe "board"
+  (it "shows the next open postion on a row"
+    (let [row [:X nil nil]
+          row-type :col-1]
+      (should= [1 1] (get-open-position row row-type))))
   (it "detects when no more moves can be made"
     (should= true (board-filled finished-board)))
   (it "detects when moves can still be made"
