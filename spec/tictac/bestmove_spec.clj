@@ -13,6 +13,14 @@
   :last-turn nil
   })
 
+(def game-with-center-filled {
+  :board [[nil nil nil]
+          [nil :O  nil]
+          [nil nil nil]]
+  :turn {:player player-computer :position nil}
+  :last-turn {:player player-human :position [1 1]}
+  })
+
 (def threatened-game-o {
   :board [[nil :X  :O ]
           [nil :X  nil]
@@ -54,5 +62,13 @@
   (it "stops threats to the current turn"
     (let [bestmove [2 1]]
       (should= bestmove (get-best-move threatened-game-o)))))
+
+(describe "computer"
+  (it "takes the best move"
+    (should= [1 1] (get-computer-move empty-game)))
+  (it "guesses when there is no best move"
+    (should (not (nil? (get-computer-move game-with-one-opening)))))
+  (it "doesn't pick center if it is taken"
+    (should (not (= [1 1] (get-computer-move game-with-center-filled))))))
 
 (run-specs)

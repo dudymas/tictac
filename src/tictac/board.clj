@@ -15,16 +15,17 @@
   "Returns the first open board position on a row given the row and the row type"
   [row row-type]
   (let [idx (.indexOf row nil)]
-    (case row-type
-      :row-0 ([[0 0][0 1][0 2]] idx)
-      :row-1 ([[1 0][1 1][1 2]] idx)
-      :row-2 ([[2 0][2 1][2 2]] idx)
-      :col-0 ([[0 0][1 0][2 0]] idx)
-      :col-1 ([[0 1][1 1][2 1]] idx)
-      :col-2 ([[0 2][1 2][2 2]] idx)
-      :diagonal-upper-left  ([[0 0][1 1][2 2]] idx)
-      :diagonal-upper-right ([[0 2][1 1][2 0]] idx)
-      )))
+    (if (>= idx 0)
+      (case row-type
+          :row-0 ([[0 0][0 1][0 2]] idx)
+          :row-1 ([[1 0][1 1][1 2]] idx)
+          :row-2 ([[2 0][2 1][2 2]] idx)
+          :col-0 ([[0 0][1 0][2 0]] idx)
+          :col-1 ([[0 1][1 1][2 1]] idx)
+          :col-2 ([[0 2][1 2][2 2]] idx)
+          :diagonal-upper-left  ([[0 0][1 1][2 2]] idx)
+          :diagonal-upper-right ([[0 2][1 1][2 0]] idx)
+          ))))
 
 (defn get-adjacent-pieces
   "Given a specific row, column, or diagonal, this returns a list of pieces"
@@ -58,4 +59,3 @@
       0 [:row-2 :col-0 :diagonal-upper-right]
       1 [:row-2 :col-1]
       2 [:row-2 :col-2 :diagonal-upper-left])))
-
