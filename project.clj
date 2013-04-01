@@ -12,4 +12,4 @@
 
   :plugins [[speclj "2.5.0"]]
   :test-paths ["spec/"]
-  :main tictac.core)
+  :main tictac.cli)

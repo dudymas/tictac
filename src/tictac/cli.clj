@@ -12,12 +12,19 @@
 
 (defn get-input-while
   "Continues to get input while a input filter
-  evaluates to anything other than true. Prints out filter to CLI."
+  evaluates to anything other than true. 
+  Prints out strings from filter to CLI."
   [input-filter & start-text]
   (if (string? start-text) (println start-text))
   ((fn []
-    (let [filter-result ()]
-      (if (string? filter-result) (println filter-result))))))
+    (let [input (read-line)
+          filter-result (input-filter input)]
+      (if (true? filter-result)
+        input
+        (do
+          (if (string? filter-result)
+            (println filter-result))
+          (recur)))))))
 
 (defn handle-end-game
   "Examines game results, displays conclusion to the player, then
@@ -33,6 +40,14 @@
   (println "Press any key to quit.")
   (read-line))
 
+(defn display-board 
+  "Prints out board"
+  [board]
+  (let [pos (atom 0)
+        translate #(do (if (nil? %) @pos ({:X "X" :O "O"} %)))
+        incr-board-position #(do (swap! pos inc) (translate %))]
+    (map #(map incr-board-position %) board)))
+
 (defn ask-player-for-piece
   "Depending on player, gets their game-piece of choice."
   [game player]
@@ -40,8 +55,8 @@
     (do
       (println "Please select a game piece ('X' or 'O')")
       (let [get-input (:input player)
-            choice (get-input #(and (string? %)
-                                    (.contains #{"X" "O"} (.toUpperCase %))))
+            filter-choices  #(and (string? %) (.contains #{"X" "O"} (.toUpperCase %)))
+            choice (get-input filter-choices)
             piece ({"O" :O "X" :X} (.toUpperCase choice))]
         (set-player-piece game player piece)))
     (let [human-game-piece  (:game-piece ((:players game) (get-player-idx game "human")))
@@ -63,27 +78,32 @@
        4 0   5 1   6 2
        7 0   8 1   9 2} parsed-move)]));;pick a column
 
+(defn print-board
+  "Prints the board to the CLI"
+  [board]
+  (println (-> (apply str (map #(apply str %) (display-board board)))
+                (clojure.string/replace #"\w{3}" "$0\n")
+                (clojure.string/replace #"\w" " $0 "))))
+
+(defn init-player 
+  "Checks that a player is ready to play, and if not, asks some questions"
+  [game player]
+  ;;for now, we just have one question
+  (if (nil? (:game-piece player))
+      (ask-player-for-piece game player)))
+
 (defn take-turn
   "Given a game with a next turn, uses the current player to get choices"
   [game]
-  (let [player (:player (:turn game))
-        next-player-idx ({0 1 1 0} (get-player-idx game (:type player)))
-        next-player ((:players game) next-player-idx)]
-    (if (nil? (:game-piece player))
-      (ask-player-for-piece)
-      (if (= "human" (:type player))
-        (let [move (ask-player-for-move player)
-              turn (assoc-in (:turn game) [:position] move)
-              board (assoc-in (:board game) move (:game-piece player))]
-          (-> (assoc-in game [:board]        board)
-              (assoc-in      [:last-turn]    turn)
-              (assoc-in      [:turn :player] next-player)))
-        (let [move (get-computer-move game)
-              turn (assoc-in (:turn game) [:position] move)
-              board (assoc-in (:board game) move (:game-piece player))]
-          (-> (assoc-in game [:board]        board)
-              (assoc-in      [:last-turn]    turn)
-              (assoc-in      [:turn :player] next-player)))))))
+  (let [ready-game (init-player game (:player (:turn game)))
+        player (:player (:turn ready-game))]
+    (if (= "human" (:type player))
+      (let [move (ask-player-for-move player)]
+        (update-game-move ready-game player move))
+      (let [move  (get-computer-move ready-game)
+            updated-game (update-game-move ready-game player move)]
+        (print-board (:board updated-game))
+        updated-game))))
 
 (defn play
   "Plays a game of tic tac toe using the CLI"

@@ -14,12 +14,12 @@
 (defn create-human-player
   "Creates a default human player"
   [& input]
-  {:type "human" :game-piece nil :input input})
+  {:type "human" :game-piece nil :input (first input)})
 
 (defn create-computer-player
   "Creates a computer player"
   [& input]
-  {:type "computer" :game-piece nil :input input})
+  {:type "computer" :game-piece nil :input (first input)})
 
 (defn get-player-idx
   "Gets the index of a player in a game by type"
@@ -30,7 +30,19 @@
   "Sets a player's piece"
   [game player piece]
   (let [player-idx (get-player-idx game (:type player))]
-    (assoc-in game [:players player-idx :game-piece] piece)))
+    (-> (assoc-in game [:players player-idx :game-piece] piece)
+        (assoc-in      [:turn :player :game-piece] piece))))
+
+(defn update-game-move 
+  "Updates the game once a move has been made"
+  [game player move]
+  (let [turn  (assoc-in (:turn game) [:position] move)
+        board (assoc-in (:board game) move (:game-piece player))
+        next-player-idx ({0 1 1 0} (get-player-idx game (:type player)))
+        next-player ((:players game) next-player-idx)]
+      (-> (assoc-in game [:board]        board)
+          (assoc-in      [:last-turn]    turn)
+          (assoc-in      [:turn :player] next-player))))
 
 (defn start-game
   "Creates a game with two players."

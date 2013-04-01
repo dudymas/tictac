@@ -26,6 +26,10 @@
           [:X  :O  :O]]
   :last-turn {:player player-computer :position [1 1]}})
 
+(def finished-game {
+  :board finished-board
+  :last-turn {:player player-computer :position [1 1]}})
+
 (def unfinished-game {
   :board unfinished-board
   :last-turn {:player player-human :position [2 2]}})
@@ -58,6 +62,10 @@
     (should= player-computer (detect-win winning-game-x))
     (should= player-human (detect-win winning-game-o)))
   (it "detects when no one has won yet"
-    (should= nil (detect-win unfinished-game))))
+    (should= nil (detect-win unfinished-game)))
+  (it "detects when the game is over"
+    (should= true (is-game-over finished-game)))
+  (it "detects when the game is not yet over"
+    (should= nil (is-game-over unfinished-game))))
 
 (run-specs)
