@@ -11,6 +11,27 @@
    [nil nil nil] ;;row 2
    [nil nil nil]]);row 3
 
+(defn create-human-player
+  "Creates a default human player"
+  [& input]
+  {:type "human" :game-piece nil :input input})
+
+(defn create-computer-player
+  "Creates a computer player"
+  [& input]
+  {:type "computer" :game-piece nil :input input})
+
+(defn get-player-idx
+  "Gets the index of a player in a game by type"
+  [game player-type]
+  (.indexOf (map #(:type %) (:players game)) player-type))
+
+(defn set-player-piece
+  "Sets a player's piece"
+  [game player piece]
+  (let [player-idx (get-player-idx game (:type player))]
+    (assoc-in game [:players player-idx :game-piece] piece)))
+
 (defn start-game
   "Creates a game with two players."
   [player-list game-board]
@@ -40,3 +61,13 @@
           false
           adj-list)
       (:player last-turn))))
+
+(defn is-game-over
+  "Returns true or winning player if game is over. True indicates no one won.
+   Returns false if the game is not yet over."
+  [game]
+  (let [winner (detect-win game)]
+    (if winner
+      winner
+      (if (board-filled (:board game))
+        true))))

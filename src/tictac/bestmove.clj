@@ -2,12 +2,11 @@
   (:use tictac.board))
 
 (defn get-row-status
-  "Returns :threat if a row is a threat to the given piece. 
+  "Returns :threat if a row is a threat to the given piece.
    Returns :win if winning. Else nil"
   [row piece]
   (let [current-pieces (set (filter #(not(nil? %)) row))
-        open-spot-count (count (filter #(nil? %) row))
-        ]
+        open-spot-count (count (filter #(nil? %) row))]
     (if (= 1 open-spot-count)
       (if (= (count current-pieces) 1)
         (if (.contains current-pieces piece)
@@ -15,7 +14,7 @@
           :threat)))))
 
 (defn get-best-move
-  "Determines from the current player turn what the best move should be. 
+  "Determines from the current player turn what the best move should be.
    Returns nil if there is no best move."
   [game]
   ;;look at last move if there is one
@@ -29,7 +28,7 @@
             (if (nil? row-status)
               (if rows-remaining
                 (recur rows-remaining))
-              (get-open-position adj-pieces row)))) 
+              (get-open-position adj-pieces row))))
         adj-rows))
     [1 1]))
 

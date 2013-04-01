@@ -41,6 +41,19 @@
                          (:turn)
                          (:player))))
 
+  (it "gets the index of a player"
+    (let [game (start-game [player-human player-computer] (create-board))]
+      (should= 1 (get-player-idx game "computer"))
+      (should= 0 (get-player-idx game "human"))))
+  (it "sets the game piece for a player"
+    (let [game (start-game [player-human player-computer] (create-board))]
+      (should= 
+        :X 
+        (:game-piece ((:players (set-player-piece game player-human :X)) 0)))
+      (should= 
+        :O 
+        (:game-piece ((:players (set-player-piece game player-computer :O)) 1)))))
+
   (it "detects a winner"
     (should= player-computer (detect-win winning-game-x))
     (should= player-human (detect-win winning-game-o)))
