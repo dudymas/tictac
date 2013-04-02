@@ -48,4 +48,6 @@
               choice
               (if rows-remaining
                 (recur rows-remaining)))))
-          [:row-0 :row-1 :row-2])))))
+          (concat
+            (get-adjacent-rows (:board game) (:position (:last-turn game)))
+            [:row-0 :row-1 :row-2]))))))

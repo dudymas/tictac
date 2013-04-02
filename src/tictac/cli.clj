@@ -25,20 +25,6 @@
             (println filter-result))
           (recur)))))))
 
-(defn handle-end-game
-  "Examines game results, displays conclusion to the player, then
-  waits for any key before ending the game."
-  [game game-result]
-  (if (true? game-result)
-    (println "Stalemate!")
-    (if (:type game-result)
-      (if (= "human" (:type game-result))
-        (println "You won!")
-        (if (= "computer" (:type game-result))
-          (println "Computer won!")))))
-  (println "Press any key to quit.")
-  (read-line))
-
 (defn display-board 
   "Prints out board"
   [board]
@@ -108,6 +94,21 @@
             updated-game (update-game-move ready-game player move)]
         updated-game))))
 
+(defn handle-end-game
+  "Examines game results, displays conclusion to the player, then
+  waits for any key before ending the game."
+  [game game-result]
+  (print-board (:board game))
+  (if (true? game-result)
+    (println "Stalemate!")
+    (if (:type game-result)
+      (if (= "human" (:type game-result))
+        (println "You won!")
+        (if (= "computer" (:type game-result))
+          (println "Computer won!")))))
+  (println "Press any key to quit.")
+  (read-line))
+
 (defn play
   "Plays a game of tic tac toe using the CLI"
   []
@@ -118,4 +119,4 @@
       (let [game-result (is-game-over game-in-progress)]
         (if (not game-result)
           (recur (take-turn game-in-progress))
-          (handle-end-game game game-result))))))
+          (handle-end-game game-in-progress game-result))))))

@@ -10,32 +10,35 @@
           [nil nil nil]
           [nil nil nil]]
   :turn {:player player-human :position nil}
-  :last-turn nil
-  })
+  :last-turn nil})
 
 (def game-with-center-filled {
   :board [[nil nil nil]
           [nil :O  nil]
           [nil nil nil]]
   :turn {:player player-computer :position nil}
-  :last-turn {:player player-human :position [1 1]}
-  })
+  :last-turn {:player player-human :position [1 1]}})
 
 (def threatened-game-o {
   :board [[nil :X  :O ]
           [nil :X  nil]
           [nil nil nil]]
   :turn {:player player-human :position nil}
-  :last-turn {:player player-computer :position [0 1]}
-  })
+  :last-turn {:player player-computer :position [0 1]}})
+
+(def open-game {
+  :board [[nil nil nil]
+          [nil :X  :O ]
+          [:O  nil nil]]
+  :turn {:player player-computer}
+  :last-turn {:player player-human :position [1 2]}})
 
 (def game-with-one-opening {
   :board [[:O  :X  :O ]
           [:O  :X  nil]
           [:X  :O  :X]]
   :turn {:player player-human :position nil}
-  :last-turn {:player player-computer :position [0 1]}
-  })
+  :last-turn {:player player-computer :position [0 1]}})
 
 (describe "bestmove"
   (it "defaults to center position"
@@ -69,6 +72,13 @@
   (it "guesses when there is no best move"
     (should (not (nil? (get-computer-move game-with-one-opening)))))
   (it "doesn't pick center if it is taken"
-    (should (not (= [1 1] (get-computer-move game-with-center-filled))))))
+    (should (not (= [1 1] (get-computer-move game-with-center-filled)))))
+  (it "takes a win before guessing"
+    (let [threatened-game-o (-> 
+        (assoc-in threatened-game-o [:turn :player] player-computer)
+        (assoc-in                   [:last-turn :position] [0 2]))]
+      (should= [2 1] (get-computer-move threatened-game-o))))
+  (it "attempts to threaten with the next turn"
+    (should (.contains #{[0 0] [0 1] [2 1] [2 2]} (get-computer-move open-game)))))
 
 (run-specs)

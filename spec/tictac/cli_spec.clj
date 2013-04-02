@@ -75,6 +75,7 @@
     (let [game (assoc-in game-human [:turn :player :input] (make-phony-input "2"))
           board (assoc-in (:board game-human) [0 1] :O)]
       (should= board (:board (take-turn game)))))
+  (it "does not allow players to move into taken spot")
   (it "automates the computer's turn"
     (let [board (assoc-in (:board game-computer) [1 1] :X)]
       (should= board (:board (take-turn game-computer)))))
