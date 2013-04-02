@@ -69,7 +69,7 @@
 
   (it "should create a position from a player's move"
     (let [player (assoc-in player-human [:input] (make-phony-input "5"))]
-      (should= [1 1] (ask-player-for-move player))))
+      (should= [1 1] (ask-player-for-move (:board game) player))))
 
   (it "lets players make moves"
     (let [game (assoc-in game-human [:turn :player :input] (make-phony-input "2"))

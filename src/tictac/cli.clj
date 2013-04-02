@@ -7,7 +7,6 @@
 (defn -main
   "Runs a command-line interface for a game of tic tac toe."
   [& args]
-  (println "hello world")
   (play))
 
 (defn get-input-while
@@ -15,7 +14,7 @@
   evaluates to anything other than true. 
   Prints out strings from filter to CLI."
   [input-filter & start-text]
-  (if (string? start-text) (println start-text))
+  (if (string? (first start-text)) (println (first start-text)))
   ((fn []
     (let [input (read-line)
           filter-result (input-filter input)]
@@ -48,6 +47,13 @@
         incr-board-position #(do (swap! pos inc) (translate %))]
     (map #(map incr-board-position %) board)))
 
+(defn print-board
+  "Prints the board to the CLI"
+  [board]
+  (println (-> (apply str (map #(apply str %) (display-board board)))
+                (clojure.string/replace #"\w{3}" "$0\n")
+                (clojure.string/replace #"\w" " $0 "))))
+
 (defn ask-player-for-piece
   "Depending on player, gets their game-piece of choice."
   [game player]
@@ -63,12 +69,15 @@
           computer-piece ({:X :O :O :X} human-game-piece)]
       (set-player-piece game player computer-piece))))
 
-(defn ask-player-for-move 
+(defn ask-player-for-move
   "Requests a move from the human player and updates the game session"
-  [player]
+  [board player]
+  (print-board board)
   (let [parse-int #(read-string (clojure.string/replace % #"\D" ""))
-        move ((:input player) 
-          #(.contains (set (range 1 10)) (parse-int %)))
+        get-input (:input player)
+        move (get-input 
+          #(.contains (set (range 1 10)) (parse-int %))
+          "Please make a move by entering an available number...")
         parsed-move (parse-int move)]
     ;;given a move, we have two decodes. One for row, and another for column
     [({1 0   2 0   3 0
@@ -77,13 +86,6 @@
     ({ 1 0   2 1   3 2
        4 0   5 1   6 2
        7 0   8 1   9 2} parsed-move)]));;pick a column
-
-(defn print-board
-  "Prints the board to the CLI"
-  [board]
-  (println (-> (apply str (map #(apply str %) (display-board board)))
-                (clojure.string/replace #"\w{3}" "$0\n")
-                (clojure.string/replace #"\w" " $0 "))))
 
 (defn init-player 
   "Checks that a player is ready to play, and if not, asks some questions"
@@ -100,11 +102,10 @@
   (let [ready-game (init-player game (:player (:turn game)))
         player (:player (:turn ready-game))]
     (if (= "human" (:type player))
-      (let [move (ask-player-for-move player)]
+      (let [move (ask-player-for-move (:board game) player)]
         (update-game-move ready-game player move))
       (let [move  (get-computer-move ready-game)
             updated-game (update-game-move ready-game player move)]
-        (print-board (:board updated-game))
         updated-game))))
 
 (defn play
@@ -116,5 +117,5 @@
     (loop [game-in-progress (take-turn game)]
       (let [game-result (is-game-over game-in-progress)]
         (if (not game-result)
-          (recur (take-turn game))
+          (recur (take-turn game-in-progress))
           (handle-end-game game game-result))))))
