@@ -80,7 +80,7 @@
       (should= board (:board (take-turn game-computer)))))
   (it "updates the last move"
     (let [game (assoc-in game-human [:turn :player :input] (make-phony-input "2"))
-          last-turn (assoc-in (:turn game-human) [:position] [0 1])]
+          last-turn (assoc-in (:turn game) [:position] [0 1])]
       (should= last-turn (:last-turn (take-turn game)))))
   (it "alternates the next player turn"
     (let [turn (assoc-in (:turn game-computer) [:player] player-human)]

@@ -50,13 +50,18 @@
       (should= 1 (get-player-idx game "computer"))
       (should= 0 (get-player-idx game "human"))))
   (it "sets the game piece for a player"
-    (let [game (start-game [player-human player-computer] (create-board))]
-      (should= 
-        :X 
-        (:game-piece ((:players (set-player-piece game player-human :X)) 0)))
-      (should= 
-        :O 
-        (:game-piece ((:players (set-player-piece game player-computer :O)) 1)))))
+    (let [p1 (create-human-player)
+          p2 (create-computer-player)
+          game (start-game [p1 p2] (create-board))
+          game-updated (-> (assoc-in game [:players 1 :game-piece] :X))]
+      (should= game-updated (set-player-piece game p2 :X))))
+  (it "sets the game piece for the current players turn"
+    (let [p1 (create-human-player)
+          p2 (create-computer-player)
+          game (start-game [p1 p2] (create-board))
+          game-updated (-> (assoc-in game [:players 0 :game-piece] :X)
+                           (assoc-in      [:turn :player :game-piece] :X))]
+      (should= game-updated (set-player-piece game p1 :X))))
 
   (it "detects a winner"
     (should= player-computer (detect-win winning-game-x))

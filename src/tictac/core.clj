@@ -30,8 +30,10 @@
   "Sets a player's piece"
   [game player piece]
   (let [player-idx (get-player-idx game (:type player))]
-    (-> (assoc-in game [:players player-idx :game-piece] piece)
-        (assoc-in      [:turn :player :game-piece] piece))))
+    (if (= (:type (:player (:turn game))) (:type player))
+      (-> (assoc-in game [:players player-idx :game-piece] piece)
+          (assoc-in      [:turn :player :game-piece] piece))
+      (-> (assoc-in game [:players player-idx :game-piece] piece)))))
 
 (defn update-game-move 
   "Updates the game once a move has been made"

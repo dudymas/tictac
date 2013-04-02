@@ -89,8 +89,10 @@
   "Checks that a player is ready to play, and if not, asks some questions"
   [game player]
   ;;for now, we just have one question
+  ;;later we might let the player choose who goes first and the like
   (if (nil? (:game-piece player))
-      (ask-player-for-piece game player)))
+      (ask-player-for-piece game player)
+      game))
 
 (defn take-turn
   "Given a game with a next turn, uses the current player to get choices"
