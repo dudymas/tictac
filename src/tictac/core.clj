@@ -35,7 +35,7 @@
           (assoc-in      [:turn :player :game-piece] piece))
       (-> (assoc-in game [:players player-idx :game-piece] piece)))))
 
-(defn update-game-move 
+(defn update-game-move
   "Updates the game once a move has been made"
   [game player move]
   (let [turn  (assoc-in (:turn game) [:position] move)

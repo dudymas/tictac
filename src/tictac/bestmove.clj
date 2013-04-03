@@ -49,7 +49,7 @@
   ([game]
     (let [piece-in-play (:game-piece (:player (:turn game)))
           last-position (:position (:last-turn game))
-          board (:board game)
+          board         (:board game)
           positions (concat [last-position] (get-piece-locations board piece-in-play))]
     (get-offensive-move board positions piece-in-play)))
   ([board positions piece-in-play]
@@ -57,7 +57,7 @@
            [position & positions-remaining] positions]
       (let [adj-rows (get-adjacent-rows board position)
             find-pos #(filter-positions board adj-rows piece-in-play %)]
-        (if positions-remaining 
+        (if positions-remaining
           (let [[status position]
                   (some #(when (last %) %)[
                     [:win       (find-pos [:win])]

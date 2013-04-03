@@ -72,7 +72,7 @@
   (it "doesn't pick center if it is taken"
     (should (not (= [1 1] (get-computer-move game-with-center-filled)))))
   (it "takes a win before guessing"
-    (let [threatened-game-o (-> 
+    (let [threatened-game-o (->
         (assoc-in threatened-game-o [:turn :player] player-computer)
         (assoc-in                   [:last-turn] {:player player-human :position [0 2]}))]
       (should= [2 1] (get-computer-move threatened-game-o))))

@@ -12,7 +12,7 @@
 
 (defn get-input-while
   "Continues to get input while a input filter
-  evaluates to anything other than true. 
+  evaluates to anything other than true.
   Prints out strings from filter to CLI."
   [input-filter & start-text]
   (if (string? (first start-text)) (println (first start-text)))
@@ -26,7 +26,7 @@
             (println filter-result))
           (recur)))))))
 
-(defn display-board 
+(defn display-board
   "Prints out board"
   [board]
   (let [move (atom 0)
@@ -63,14 +63,14 @@
   (print-board board)
   (let [parse-int #(read-string (clojure.string/replace % #"\D" ""))
         get-input (:input player)
-        move (get-input 
+        move (get-input
           #(.contains (set (range 1 10)) (parse-int %))
           "Please make a move by entering an available number...")
         parsed-move (parse-int move)]
     ;;given a move, we have two decodes. One for row, and another for column
     (get-position-by-idx parsed-move)));;pick a column
 
-(defn init-player 
+(defn init-player
   "Checks that a player is ready to play, and if not, asks some questions"
   [game player]
   ;;for now, we just have one question

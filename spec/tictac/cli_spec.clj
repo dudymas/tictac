@@ -7,7 +7,7 @@
   [inp]
   (if (vector? inp)
     (let [results (atom inp)]
-      (fn [& args] 
+      (fn [& args]
         (let [result (first @results)]
           (swap! results rest)
           result)))
@@ -87,9 +87,9 @@
     (let [turn (assoc-in (:turn game-computer) [:player] player-human)]
       (should= turn (:turn (take-turn game-computer)))))
   (it "saves the player's choice of piece if it was nil"
-    (let [game  (assoc-in 
-                  game-human-nilpiece 
-                  [:turn :player :input] 
+    (let [game  (assoc-in
+                  game-human-nilpiece
+                  [:turn :player :input]
                   (make-phony-input ["O" "3"]))
           updated-game (take-turn game)]
       (should= :O (:game-piece (:player (:last-turn updated-game))))
