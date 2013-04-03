@@ -21,6 +21,11 @@
   (it "detects when moves can still be made"
     (should= false (board-filled unfinished-board)))
 
+  (it "gets locations of a given piece"
+    (let[board [[nil :X  :O ]
+                [:O  :X  nil]
+                [:X  nil nil]]]
+      (should= #{[1 1] [0 1] [2 0]} (set (get-piece-locations board :X)) )))
   (it "gets adjacent pieces"
     (let [col-0 '(:O :X :O)
           row-1 '(:X nil :O)

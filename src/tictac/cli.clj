@@ -1,6 +1,7 @@
 (ns tictac.cli
   (:use tictac.core
-        tictac.bestmove))
+        tictac.bestmove
+        tictac.board))
 
 (def play)
 
@@ -28,9 +29,9 @@
 (defn display-board 
   "Prints out board"
   [board]
-  (let [pos (atom 0)
-        translate #(do (if (nil? %) @pos ({:X "X" :O "O"} %)))
-        incr-board-position #(do (swap! pos inc) (translate %))]
+  (let [move (atom 0)
+        translate #(do (if (nil? %) @move ({:X "X" :O "O"} %)))
+        incr-board-position #(do (swap! move inc) (translate %))]
     (map #(map incr-board-position %) board)))
 
 (defn print-board
@@ -66,12 +67,7 @@
           "Please make a move by entering an available number...")
         parsed-move (parse-int move)]
     ;;given a move, we have two decodes. One for row, and another for column
-    [({1 0   2 0   3 0
-       4 1   5 1   6 1
-       7 2   8 2   9 2} parsed-move)   ;;pick a row
-    ({ 1 0   2 1   3 2
-       4 0   5 1   6 2
-       7 0   8 1   9 2} parsed-move)]));;pick a column
+    (get-position-by-idx parsed-move)));;pick a column
 
 (defn init-player 
   "Checks that a player is ready to play, and if not, asks some questions"

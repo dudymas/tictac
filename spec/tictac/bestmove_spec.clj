@@ -43,8 +43,6 @@
 (describe "bestmove"
   (it "defaults to center position"
     (should= [1 1] (get-best-move empty-game)))
-  (it "returns nil if there is no best move"
-    (should= nil (get-best-move game-with-one-opening)))
 
   (it "can tell if a row is a threat"
     (let [row [:X nil :X]]
@@ -58,7 +56,7 @@
       (should= nil (get-row-status row :X))))
   (it "can ignore a row that has too many open spots"
     (let [row [:X nil nil]]
-      (should= nil (get-row-status row :X)))
+      (should= :contested (get-row-status row :X)))
     (let [row [nil nil nil]]
       (should= nil (get-row-status row :X))))
 

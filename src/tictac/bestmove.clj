@@ -11,26 +11,68 @@
       (if (= (count current-pieces) 1)
         (if (.contains current-pieces piece)
           :win
-          :threat)))))
+          :threat))
+      (if (= 2 open-spot-count)
+        :contested))))
+
+(defn filter-positions
+  "Given a list of acceptable statuses and rows on a board for a piece,
+  Returns the first acceptable position to be used. Prefers first status"
+  [board rows piece acceptable-statuses]
+  (loop [[row & rows-remaining] rows]
+    (let [ adj-pieces (get-adjacent-pieces board row)
+          row-status (get-row-status adj-pieces piece)]
+      (if (not (.contains acceptable-statuses row-status))
+        (if rows-remaining
+          (recur rows-remaining))
+        (let [status-idx (.indexOf acceptable-statuses row-status)]
+          (if (> status-idx 0) ;can we do better?
+            (or
+              (filter-positions board rows piece (take status-idx acceptable-statuses))
+              (get-open-position adj-pieces row))
+            (get-open-position adj-pieces row)))))))
 
 (defn get-best-move
   "Determines from the current player turn what the best move should be.
    Returns nil if there is no best move."
   [game]
   ;;look at last move if there is one
-  (if (:last-turn game)
+  (if (and (:last-turn game) (get-in game [:board 1 1]))
     (let [last-position (:position (:last-turn game))
           piece-in-play (:game-piece (:player (:turn game)))
           adj-rows (get-adjacent-rows (:board game) last-position)]
-      ((fn [[row & rows-remaining]]
-          (let [ adj-pieces (get-adjacent-pieces (:board game) row)
-                row-status (get-row-status adj-pieces piece-in-play)]
-            (if (nil? row-status)
-              (if rows-remaining
-                (recur rows-remaining))
-              (get-open-position adj-pieces row))))
-        adj-rows))
+      (filter-positions (:board game) adj-rows piece-in-play [:win :threat]))
     [1 1]))
+
+(defn get-offensive-move ;;TODO: add personal fouls though... not in my house
+  "Tries to choose either winning moves or moves to gain a contested row."
+  ([game]
+    (let [piece-in-play (:game-piece (:player (:turn game)))
+          positions (get-piece-locations piece-in-play)
+          board (:board game)]
+    (get-offensive-move board positions piece-in-play)))
+  ([board positions piece-in-play]
+    (loop [contested-position nil
+           [position & positions-remaining] positions]
+      (let [adj-rows (get-adjacent-rows board position)]
+        (if positions-remaining 
+          (let [[status position]
+            (loop [contested-position contested-position
+                  [row & rows-remaining] adj-rows]
+              (let [ adj-pieces (get-adjacent-pieces board row)
+                    row-status (get-row-status adj-pieces piece-in-play)]
+                (if (.contains [nil :contested] row-status)
+                  (if rows-remaining
+                    (if (and (= :contested row-status) (not contested-position))
+                      (recur (get-open-position adj-pieces row) rows-remaining)
+                      (recur contested-position rows-remaining))
+                    [:contested contested-position])
+                  [:win (get-open-position adj-pieces row)])))]
+            (if (= status :win)
+              position
+              (if positions-remaining
+                  (recur contested-position positions-remaining)
+                  contested-position))))))))
 
 (defn get-computer-move
   "Attempts to make the best next move, or just picks an available spot if there

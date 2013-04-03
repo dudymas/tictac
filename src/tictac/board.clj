@@ -27,6 +27,27 @@
           :diagonal-upper-right ([[0 2][1 1][2 0]] idx)
           ))))
 
+(defn get-position-by-idx 
+  "Gets the position of a move by its index"
+  [idx]
+  [({1 0   2 0   3 0
+     4 1   5 1   6 1
+     7 2   8 2   9 2} idx)   ;;pick a row
+  ({ 1 0   2 1   3 2
+     4 0   5 1   6 2
+     7 0   8 1   9 2} idx)])
+
+(defn get-piece-locations 
+  "Returns an array of positions for each move of a given piece on a given board"
+  [board piece]
+  (let [move (atom 0)
+        find-piece #(do (if (= piece %) (get-position-by-idx @move) ))
+        incr-board-position #(do (swap! move inc) (find-piece %))]
+    (filter #(not(nil? %))
+      (reduce concat
+        (map 
+          #(map incr-board-position %) board)))))
+
 (defn get-adjacent-pieces
   "Given a specific row, column, or diagonal, this returns a list of pieces"
   [game-board adjacency]
