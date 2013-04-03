@@ -74,7 +74,7 @@
   (it "takes a win before guessing"
     (let [threatened-game-o (-> 
         (assoc-in threatened-game-o [:turn :player] player-computer)
-        (assoc-in                   [:last-turn :position] [0 2]))]
+        (assoc-in                   [:last-turn] {:player player-human :position [0 2]}))]
       (should= [2 1] (get-computer-move threatened-game-o))))
   (it "attempts to threaten with the next turn"
     (should (.contains #{[0 0] [0 1] [2 1] [2 2]} (get-computer-move open-game)))))

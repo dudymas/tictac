@@ -48,36 +48,34 @@
   "Tries to choose either winning moves or moves to gain a contested row."
   ([game]
     (let [piece-in-play (:game-piece (:player (:turn game)))
-          positions (get-piece-locations piece-in-play)
-          board (:board game)]
+          last-position (:position (:last-turn game))
+          board (:board game)
+          positions (concat [last-position] (get-piece-locations board piece-in-play))]
     (get-offensive-move board positions piece-in-play)))
   ([board positions piece-in-play]
     (loop [contested-position nil
            [position & positions-remaining] positions]
-      (let [adj-rows (get-adjacent-rows board position)]
+      (let [adj-rows (get-adjacent-rows board position)
+            find-pos #(filter-positions board adj-rows piece-in-play %)]
         (if positions-remaining 
           (let [[status position]
-            (loop [contested-position contested-position
-                  [row & rows-remaining] adj-rows]
-              (let [ adj-pieces (get-adjacent-pieces board row)
-                    row-status (get-row-status adj-pieces piece-in-play)]
-                (if (.contains [nil :contested] row-status)
-                  (if rows-remaining
-                    (if (and (= :contested row-status) (not contested-position))
-                      (recur (get-open-position adj-pieces row) rows-remaining)
-                      (recur contested-position rows-remaining))
-                    [:contested contested-position])
-                  [:win (get-open-position adj-pieces row)])))]
+                  (some #(when (last %) %)[
+                    [:win       (find-pos [:win])]
+                    [:contested contested-position]
+                    [:contested (find-pos [:contested])]])]
             (if (= status :win)
               position
               (if positions-remaining
-                  (recur contested-position positions-remaining)
-                  contested-position))))))))
+                (recur contested-position positions-remaining)
+                position))))))))
 
 (defn get-computer-move
   "Attempts to make the best next move, or just picks an available spot if there
   is no best move and the center is taken."
   [game]
+  (some #(do @%) [ ;;lazy execute these
+    (delay (get-best-move game))
+    (delay (get-offensive-move game))])
   (let [best (get-best-move game)]
     (if best
       best

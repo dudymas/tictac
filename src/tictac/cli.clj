@@ -32,6 +32,7 @@
   (let [move (atom 0)
         translate #(do (if (nil? %) @move ({:X "X" :O "O"} %)))
         incr-board-position #(do (swap! move inc) (translate %))]
+        ;;there probably is an easier way to do with with map-indexed
     (map #(map incr-board-position %) board)))
 
 (defn print-board
