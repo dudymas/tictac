@@ -35,15 +35,17 @@
   :last-turn {:player player-human :position [2 2]}})
 
 (describe "tictac core"
+  (tags :core)
   (it "creates a game board"
     (should (create-board)))
-  (it "creates a game"
-    (should (start-game [player-human player-computer] (create-board))))
-  (it "lets human player take first move"
-    (should= player-human (->> (create-board)
-                         (start-game [player-human player-computer])
-                         (:turn)
-                         (:player))))
+  (context "start-game"
+    (it "creates a game"
+      (should (start-game [player-human player-computer] (create-board))))
+    (it "lets human player take first move"
+      (should= player-human (->> (create-board)
+                           (start-game [player-human player-computer])
+                           (:turn)
+                           (:player)))))
 
   (it "gets the index of a player"
     (let [game (start-game [player-human player-computer] (create-board))]

@@ -48,6 +48,13 @@
         (map
           #(map incr-board-position %) board)))))
 
+(defn is-move-legal
+  "Tests if a given move is legal or not. Moves are legal if they are made on open (nil) positions."
+  [board move]
+  (let [position (get-position-by-idx move)
+       legal-positions (get-piece-locations board nil)]
+    (.contains legal-positions position)))
+
 (defn get-adjacent-pieces
   "Given a specific row, column, or diagonal, this returns a list of pieces"
   [game-board adjacency]

@@ -14,17 +14,17 @@
   "Continues to get input while a input filter
   evaluates to anything other than true.
   Prints out strings from filter to CLI."
-  [input-filter & start-text]
+  [input-filter & [start-text input-source]]
   (if (string? (first start-text)) (println (first start-text)))
-  ((fn []
-    (let [input (read-line)
+  (loop []
+    (let [input (if input-source (input-source) (read-line)) ;allow injection
           filter-result (input-filter input)]
       (if (true? filter-result)
         input
         (do
           (if (string? filter-result)
             (println filter-result))
-          (recur)))))))
+          (recur))))))
 
 (defn display-board
   "Prints out board"
@@ -62,9 +62,10 @@
   [board player]
   (print-board board)
   (let [parse-int #(read-string (clojure.string/replace % #"\D" ""))
-        get-input (:input player)
+        get-input (:input player) ;we use this for dependency-injection of a cli mock
+        msg "That move is not legal. Please choose an open spot"
         move (get-input
-          #(.contains (set (range 1 10)) (parse-int %))
+          #(is-move-legal board (parse-int %))
           "Please make a move by entering an available number...")
         parsed-move (parse-int move)]
     ;;given a move, we have two decodes. One for row, and another for column

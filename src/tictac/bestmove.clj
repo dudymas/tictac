@@ -50,44 +50,29 @@
     (let [piece-in-play (:game-piece (:player (:turn game)))
           last-position (:position (:last-turn game))
           board         (:board game)
-          positions (concat [last-position] (get-piece-locations board piece-in-play))]
+          positions (concat (get-piece-locations board piece-in-play) [last-position])]
     (get-offensive-move board positions piece-in-play)))
   ([board positions piece-in-play]
     (loop [contested-position nil
            [position & positions-remaining] positions]
       (let [adj-rows (get-adjacent-rows board position)
             find-pos #(filter-positions board adj-rows piece-in-play %)]
-        (if positions-remaining
-          (let [[status position]
-                  (some #(when (last %) %)[
-                    [:win       (find-pos [:win])]
-                    [:contested contested-position]
-                    [:contested (find-pos [:contested])]])]
-            (if (= status :win)
-              position
-              (if positions-remaining
-                (recur contested-position positions-remaining)
-                position))))))))
+        (let [[status position]
+                (some #(when (last %) %) [
+                  [:win       (find-pos [:win])]
+                  [:contested contested-position]
+                  [:contested (find-pos [:contested])]])]
+          (if (= status :win)
+            (do (println position) position)
+            (if positions-remaining
+              (recur position positions-remaining)
+              (do (println position) position))))))))
 
 (defn get-computer-move
   "Attempts to make the best next move, or just picks an available spot if there
   is no best move and the center is taken."
   [game]
-  (some #(do @%) [ ;;lazy execute these
+  (some #(do @%) [ ;;lazy execute these until we get something
     (delay (get-best-move game))
-    (delay (get-offensive-move game))])
-  (let [best (get-best-move game)]
-    (if best
-      best
-      (if (nil? (((:board game) 1) 1))
-        [1 1]
-        ((fn [[row & rows-remaining]]
-          (let [adj-pieces (get-adjacent-pieces (:board game) row)
-                choice (get-open-position adj-pieces row)]
-            (if choice
-              choice
-              (if rows-remaining
-                (recur rows-remaining)))))
-          (concat
-            (get-adjacent-rows (:board game) (:position (:last-turn game)))
-            [:row-0 :row-1 :row-2]))))))
+    (delay (get-offensive-move game))
+    (delay (take 1 (get-piece-locations (:board game) nil)))]))

@@ -12,6 +12,7 @@
   [:O nil :X]])
 
 (describe "board"
+  (tags :board)
   (it "shows the next open postion on a row"
     (let [row [:X nil nil]
           row-type :col-1]
@@ -25,7 +26,18 @@
     (let[board [[nil :X  :O ]
                 [:O  :X  nil]
                 [:X  nil nil]]]
-      (should= #{[1 1] [0 1] [2 0]} (set (get-piece-locations board :X)) )))
+      (should= #{[1 1] [0 1] [2 0]} (set (get-piece-locations board :X)))))
+
+  (context "is-move-legal"
+    (it "returns true for legal moves"
+      (should (is-move-legal unfinished-board 2))
+      (should (is-move-legal unfinished-board 5))
+      (should (is-move-legal unfinished-board 8)))
+    (it "returns false for illegal moves"
+      (should-not (is-move-legal unfinished-board 1))
+      (should-not (is-move-legal unfinished-board 3))
+      (should-not (is-move-legal unfinished-board 7))))
+
   (it "gets adjacent pieces"
     (let [col-0 '(:O :X :O)
           row-1 '(:X nil :O)
