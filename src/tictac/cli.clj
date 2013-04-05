@@ -105,7 +105,8 @@
         (if (= "computer" (:type game-result))
           (println "Computer won!")))))
   (println "Press any key to quit.")
-  (read-line))
+  (read-line)
+  nil)
 
 (defn play
   "Plays a game of tic tac toe using the CLI"
