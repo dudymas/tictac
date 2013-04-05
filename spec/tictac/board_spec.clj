@@ -47,7 +47,7 @@
     (should= row-1 (get-adjacent-pieces unfinished-board :row-1))))
 
   (it "lists all adjacent rows for a given position"
-    (let [rows [:row-2 :col-0 :diagonal-upper-right]]
-      (should= rows (get-adjacent-rows unfinished-board [2 0])))))
+    (let [rows #{:row-2 :col-0 :diagonal-upper-right}]
+      (should= rows (set (get-adjacent-rows unfinished-board [2 0]))))))
 
 (run-specs)

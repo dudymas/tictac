@@ -115,13 +115,13 @@
 (describe "offense (attempting to win)"
   (tags :bm :bm-offense)
   (context "get-offensive-move"
-    (it "gets rows that are contested"
+    (it "gets rows that are contested in corners first"
       (let [game (-> (assoc-in threatened-game-o [:board 1 1] :O)
                      (assoc-in                   [:last-turn :position] [1 1])
                      (assoc-in                   [:last-turn :player] player-human)
                      (assoc-in                   [:turn :player] player-computer))]
         (should (.contains
-                  [[1 0][1 2]]
+                  [[0 0][2 2][0 2]]
                   (get-offensive-move game)))))
     (it "prefers contested rows that are going to turn into wins"
       (let [game (-> (assoc-in threatened-game-o [:board 1 1] nil)

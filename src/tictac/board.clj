@@ -76,14 +76,14 @@
   [game-board position]
   (case (position 0);;which row are we at
     0 (case (position 1)
-      0 [:row-0 :col-0 :diagonal-upper-left]
+      0 [:diagonal-upper-left :col-0 :row-0]
       1 [:row-0 :col-1]
-      2 [:row-0 :col-2 :diagonal-upper-right])
+      2 [:diagonal-upper-right :col-2 :row-0])
     1 (case (position 1)
       0 [:row-1 :col-0]
-      1 [:row-1 :col-1 :diagonal-upper-left :diagonal-upper-right]
+      1 [:diagonal-upper-left :diagonal-upper-right :row-1 :col-1]
       2 [:row-1 :col-2])
     2 (case (position 1)
-      0 [:row-2 :col-0 :diagonal-upper-right]
+      0 [:diagonal-upper-right :col-0 :row-2]
       1 [:row-2 :col-1]
-      2 [:row-2 :col-2 :diagonal-upper-left])))
+      2 [:diagonal-upper-left :col-2 :row-2])))
