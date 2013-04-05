@@ -40,8 +40,15 @@
   (if (and (:last-turn game) (get-in game [:board 1 1]))
     (let [last-position (:position (:last-turn game))
           piece-in-play (:game-piece (:player (:turn game)))
-          adj-rows (get-adjacent-rows (:board game) last-position)]
-      (filter-positions (:board game) adj-rows piece-in-play [:win :threat]))
+          adj-rows (get-adjacent-rows (:board game) last-position)
+          board (:board game)]
+      (or
+        (some ;;see if there are any wins we can take this very second
+          #(filter-positions board % piece-in-play [:win])
+          (map
+            #(get-adjacent-rows board %)
+            (get-piece-locations board nil)))
+      (filter-positions board adj-rows piece-in-play [:win :threat])))
     [1 1]))
 
 (defn get-offensive-move ;;TODO: add personal fouls though... not in my house

@@ -39,13 +39,32 @@
   :turn {:player player-computer}
   :last-turn {:player player-human :position [1 2]}})
 
+(def open-game-board-x
+  [[nil nil nil]
+   [:O  :X  :O ]
+   [nil nil nil]])
+
+(def open-game-x {
+  :board open-game-board-x
+  :turn {:player player-computer}
+  :last-turn {:player player-human :position [1 2]}})
+
+(def open-game-board-o
+  [[:X  :X  nil]
+   [:O  :X  :O ]
+   [nil :O  :O]])
+
+(def open-game-o {
+  :board open-game-board-o
+  :turn {:player player-computer}
+  :last-turn {:player player-human :position [2 2]}})
+
 (def game-with-one-opening {
   :board [[:O  :X  :O ]
           [:O  :X  nil]
           [:X  :O  :X]]
   :turn {:player player-human :position nil}
   :last-turn {:player player-computer :position [0 1]}})
-
 
 (describe "move status"
   (tags :bm :bm-status)
@@ -85,10 +104,13 @@
     (tags :bm :bm-best)
     (it "defaults to center position"
       (should= [1 1] (get-best-move empty-game)))
-
     (it "stops threats to the current turn"
       (let [bestmove [2 1]]
-        (should= bestmove (get-best-move threatened-game-o))))))
+        (should= bestmove (get-best-move threatened-game-o))))
+    (it "should still look for a win before blocking a threat"
+      (should= [0 2] (get-best-move open-game-o)))
+    (it "returns nil if there is no best move"
+      (should-not (get-best-move open-game-x)))))
 
 (describe "offense (attempting to win)"
   (tags :bm :bm-offense)
