@@ -15,11 +15,19 @@
       (if (= 2 open-spot-count)
         :contested))))
 
+(defn sort-rows 
+  "Sorts rows by their ability to contest for wins. For now, mostly just puts
+  diagonals before horizontal or vertical rows."
+  [rows]
+  (concat 
+    (filter #(.contains [:diagonal-upper-left :diagonal-upper-right] %) rows)
+    (filter #(.contains [:row-0 :row-1 :row-2 :col-0 :col-1 :col-2] %) rows)))
+
 (defn filter-positions
   "Given a list of acceptable statuses and rows on a board for a piece,
   Returns the first acceptable position to be used. Prefers first status"
   [board rows piece acceptable-statuses]
-  (loop [[row & rows-remaining] rows]
+  (loop [[row & rows-remaining] (sort-rows rows)]
     (let [ adj-pieces (get-adjacent-pieces board row)
           row-status (get-row-status adj-pieces piece)]
       (if (not (.contains acceptable-statuses row-status))
@@ -70,10 +78,10 @@
                   [:contested contested-position]
                   [:contested (find-pos [:contested])]])]
           (if (= status :win)
-            (do (println position) position)
+            position
             (if positions-remaining
               (recur position positions-remaining)
-              (do (println position) position))))))))
+              position)))))))
 
 (defn get-computer-move
   "Attempts to make the best next move, or just picks an available spot if there
