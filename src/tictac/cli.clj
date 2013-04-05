@@ -49,7 +49,7 @@
     (do
       (println "Please select a game piece ('X' or 'O')")
       (let [get-input (:input player)
-            filter-choices  #(and (string? %) (.contains #{"X" "O"} (.toUpperCase %)))
+            filter-choices  #(and (string? %) (> (count %) 0) (.contains #{"X" "O"} (.toUpperCase %)))
             choice (get-input filter-choices)
             piece ({"O" :O "X" :X} (.toUpperCase choice))]
         (set-player-piece game player piece)))
@@ -61,7 +61,7 @@
   "Requests a move from the human player and updates the game session"
   [board player]
   (print-board board)
-  (let [parse-int #(read-string (clojure.string/replace % #"\D" ""))
+  (let [parse-int #(and (string? %) (> (count %) 0) (read-string (clojure.string/replace % #"\D" "")))
         get-input (:input player) ;we use this for dependency-injection of a cli mock
         msg "That move is not legal. Please choose an open spot"
         move (get-input
