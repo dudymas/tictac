@@ -15,11 +15,11 @@
       (if (= 2 open-spot-count)
         :contested))))
 
-(defn sort-rows 
+(defn sort-rows
   "Sorts rows by their ability to contest for wins. For now, mostly just puts
   diagonals before horizontal or vertical rows."
   [rows]
-  (concat 
+  (concat
     (filter #(.contains [:diagonal-upper-left :diagonal-upper-right] %) rows)
     (filter #(.contains [:row-0 :row-1 :row-2 :col-0 :col-1 :col-2] %) rows)))
 
