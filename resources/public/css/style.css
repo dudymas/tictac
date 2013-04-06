@@ -27,4 +27,9 @@ body {
 	border-radius: 3px;
 	background-color: #999;
 	box-shadow: 10px 10px 10px #999;
+	/*text styles*/
+	font-size: 70px;
+	text-align: center;
+	text-shadow: rgb(97, 202, 255) 0px 0px 15px;
+	color: rgb(55, 70, 122);
 }

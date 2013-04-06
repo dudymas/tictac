@@ -1,25 +1,49 @@
 
 angular.module("tictac", [])
 	.factory("Player", function (){
+		var player = {piece : "O"};
 		var Player = function Player () {};
-		var piece = "O";
 		Player.prototype.getPiece = function() {
-			return piece;//make a ui call later if this isn't set yet
+			return player.piece;//make a ui call later if this isn't set yet
 		};
-		return Player;
+		Player.prototype.getData = function() {
+			return player;
+		};
+		return new Player();
+	})
+	.factory("Board", function() {
+		var board = [
+		[null, null, null ],
+		[null, null, null ],
+		[null, null, null ]]
+		var Board = function Board () {
+		}
+		Board.prototype.getData = function() {
+			return board;
+		};
+		return new Board();
 	});
 
-function boardCtrl ($scope) {
-	$scope.board = [
-		[null,  null,  null ]
-		[null,  null,  null ]
-		[null,  null,  null ]];
+function boardCtrl ($scope, Board) {
+	$scope.board = Board.getData();
 }
 
-function positionCtrl ($scope, Player) {
-	$scope.piece = null;
-	$scope.click = function() {
-		if ($scope.piece == null)
-			$scope.piece = Player.getPiece();
+function rowCtrl ($scope, Player) {
+	$scope.setPiece = function(pos) {
+		var piece = $scope.row[pos];
+		if (piece == null)
+			piece = Player.getPiece();
+		else if (piece == "O")
+			piece = "X";
+		else
+			piece = null;
+		$scope.row[pos] = piece;
 	};
+}
+
+function debugCtrl ($scope, Board, Player) {
+	//show info about our state
+	$scope.data = {};
+	$scope.data.board = Board.getData();
+	$scope.data.player = Player.getData();
 }
