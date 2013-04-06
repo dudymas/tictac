@@ -14,8 +14,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="foot">
+	<div id="foot">
 		<div class="about">
+			<div ng-controller="computerCtrl" class="ai-controls">
+				<label>Computer makes moves:</label>
+				<input type="checkbox" ng-model="computer['is-on']">
+			</div>
 			<div ng-controller="debugCtrl" class="debug">
 				<span class="debug-info" ng-repeat="(attr,val) in data">
 					<dl>{{attr}}:</dl>

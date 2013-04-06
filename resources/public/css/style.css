@@ -4,6 +4,11 @@ body {
 	width: 100%;
 }
 
+#foot {
+	margin: 2em;
+	width: 650px;
+}
+
 #board {
 	background-color: #AAA;
 	border: solid black 1px;
