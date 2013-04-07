@@ -22,6 +22,8 @@
 			<div ng-controller="computerCtrl" class="ai-controls">
 				<label>Computer makes moves:</label>
 				<input type="checkbox" ng-model="computer['is-on']">
+				<label>Computer requests moves from server:</label>
+				<input type="checkbox" ng-model="computer.online">
 			</div>
 			<div ng-controller="debugCtrl" class="debug">
 				<span class="debug-info" ng-repeat="(attr,val) in data">
