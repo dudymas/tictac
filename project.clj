@@ -23,4 +23,4 @@
   :test-paths ["spec/"]
   :main tictac.cli
 
-  :ring {:handler tictac.remotes/web})
+  :ring {:handler tictac.web/handler})

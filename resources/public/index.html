@@ -19,6 +19,9 @@
 	</div>
 	<div id="foot">
 		<div class="about">
+			<div ng-controller="gameCtrl" class="game-controls">
+				<button ng-click="reset()" class="restart-game">Reset Board</button>
+			</div>
 			<div ng-controller="computerCtrl" class="ai-controls">
 				<label>Computer makes moves:</label>
 				<input type="checkbox" ng-model="computer['is-on']">

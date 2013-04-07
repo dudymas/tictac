@@ -13,7 +13,7 @@ angular.module("tictac", [])
 		return new Player();
 	})
 	.factory("Computer", function($http) {
-		var computer = {piece : "X", type: "computer", "is-on": true, online: false};
+		var computer = {piece : "X", type: "computer", "is-on": true, online: true};
 		computer["status"] = "ready for request";
 		var Computer = function Computer () {};
 		Computer.prototype.getData = function() {return computer; };
@@ -95,6 +95,16 @@ function rowCtrl ($scope, Turn, Game) {
 		//only update the board row if the game allows a move
 		if (Game.move(turn.player, [$scope.$index, pos]))
 			$scope.row[pos] = turn.player.piece;
+	};
+}
+
+function gameCtrl ($scope, Game, Player) {
+	$scope.reset = function() {
+		var game = Game.getData();
+		for (var i = 0; i < game.board.length; i++)
+			for (var j = 0; j < game.board[i].length; j++)
+				game.board[i][j] = null;
+		game.turn.player = Player.getData();
 	};
 }
 
