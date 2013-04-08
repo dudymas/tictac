@@ -68,7 +68,7 @@
         last-turn (:last-turn game)
         position (:position last-turn)
         piece (:game-piece (:player last-turn))
-        row-list (get-adjacent-rows game-board position)
+        row-list (get-adjacent-rows position)
         adj-list (map #(get-adjacent-pieces game-board %) row-list)]
     (if (reduce
           (fn [result,next-row] (or result (is-row-complete next-row piece)))

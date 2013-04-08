@@ -4,6 +4,9 @@
 
 (def player-human    {:type "human"    :game-piece :O})
 (def player-computer {:type "computer" :game-piece :X})
+(def players [player-human player-computer])
+(def human-turn {:player player-human})
+(def computer-turn {:player player-computer})
 
 (def empty-game {
   :board [[nil nil nil]
@@ -87,17 +90,25 @@
       (let [row [nil nil nil]]
         (should= nil (get-row-status row :X)))))
 
+  (context "most-contested-position"
+    (tags :bm-contested)
+    (it "returns a position"
+      (should= [1 1] (most-contested-position (:board empty-game) [[1 1]])))
+    (it "returns a position that has contested rows over one that doesn't"
+      (should= [0 0] (most-contested-position threatened-board-o [[0 2][0 0]]))
+      (should= [2 2] (most-contested-position threatened-board-o [[0 0][2 2][0 2]]))))
+
   (context "filter-positions"
     (it "filters positions by row status"
       (should (.contains
                 [[2 1] [2 2]]
-                (filter-positions open-game-board [:row-0 :row-1 :row-2] :O [:win :contested]))))
+                (first (filter-positions open-game-board [:row-0 :row-1 :row-2] :O [:win :contested])))))
     (it "prefers lower index statuses over higher ones"
-      (should= [2 1] (filter-positions
-                        threatened-board-o
-                        [:col-0 :col-1 :col-2]
-                        :O
-                        [:win :threat :contested nil])))))
+      (should= [2 1] (first (filter-positions
+                              threatened-board-o
+                              [:col-0 :col-1 :col-2]
+                              :O
+                              [:win :threat :contested nil]))))))
 
 (describe "defense (stop threats/pro-action)"
   (context "get-best-move"
@@ -134,7 +145,24 @@
     (it "prefers wins over contested rows"
       (let [game (-> (assoc-in threatened-game-o [:last-turn :player] player-human)
                      (assoc-in                   [:turn :player] player-computer))]
-        (should= [2 1] (get-offensive-move game))))))
+        (should= [2 1] (get-offensive-move game))))
+    (it "picks contested positions that block other contested rows"
+      (let [board [[nil nil nil]
+                   [nil :X  :O ]
+                   [nil :O  nil]]
+            game {:board board
+                  :players players
+                  :turn computer-turn
+                  :last-turn (assoc-in human-turn [:position] [2 1])}]
+        (should= [2 2] (get-offensive-move game)))
+      (let [board [[nil :O  nil]
+                   [:O  :X  nil]
+                   [nil nil nil]]
+            game {:board board
+                  :players players
+                  :turn computer-turn
+                  :last-turn (assoc-in human-turn [:position] [2 1])}]
+        (should= [0 0] (get-offensive-move game))))))
 
 (describe "computer"
   (context "get-computer-move"

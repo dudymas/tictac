@@ -16,7 +16,7 @@
   (it "shows the next open postion on a row"
     (let [row [:X nil nil]
           row-type :col-1]
-      (should= [1 1] (get-open-position row row-type))))
+      (should= #{[1 1] [2 1]} (set (get-open-positions row row-type)))))
   (it "detects when no more moves can be made"
     (should= true (board-filled finished-board)))
   (it "detects when moves can still be made"
@@ -48,6 +48,6 @@
 
   (it "lists all adjacent rows for a given position"
     (let [rows #{:row-2 :col-0 :diagonal-upper-right}]
-      (should= rows (set (get-adjacent-rows unfinished-board [2 0]))))))
+      (should= rows (set (get-adjacent-rows [2 0]))))))
 
 (run-specs)

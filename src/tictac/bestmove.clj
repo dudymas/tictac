@@ -4,16 +4,19 @@
 (defn get-row-status
   "Returns :threat if a row is a threat to the given piece.
    Returns :win if winning. Else nil"
-  [row piece]
-  (let [current-pieces (set (filter #(not(nil? %)) row))
-        open-spot-count (count (filter #(nil? %) row))]
-    (if (= 1 open-spot-count)
-      (if (= (count current-pieces) 1)
-        (if (.contains current-pieces piece)
-          :win
-          :threat))
-      (if (= 2 open-spot-count)
-        :contested))))
+  ([row]
+    (if (= :contested (get-row-status row :O))
+      :contested)) ;;this can only be good for just getting contested rows
+  ([row piece]
+    (let [current-pieces (set (filter #(not(nil? %)) row))
+          open-spot-count (count (filter #(nil? %) row))]
+      (if (= 1 open-spot-count)
+        (if (= (count current-pieces) 1)
+          (if (.contains current-pieces piece)
+            :win
+            :threat))
+        (if (= 2 open-spot-count)
+          :contested)))))
 
 (defn sort-rows
   "Sorts rows by their ability to contest for wins. For now, mostly just puts
@@ -22,6 +25,17 @@
   (concat
     (filter #(.contains [:diagonal-upper-left :diagonal-upper-right] %) rows)
     (filter #(.contains [:row-0 :row-1 :row-2 :col-0 :col-1 :col-2] %) rows)))
+
+(defn most-contested-position
+  "Given a list of positions, returns the most contested one."
+  [board positions]
+  (let [count-contested-rows
+          (fn [p]
+            (count
+              (keep identity
+                (map get-row-status
+                  (map #(get-adjacent-pieces board %) (get-adjacent-rows p))))))]
+    (last (sort-by count-contested-rows positions))))
 
 (defn filter-positions
   "Given a list of acceptable statuses and rows on a board for a piece,
@@ -37,8 +51,8 @@
           (if (> status-idx 0) ;can we do better?
             (or
               (filter-positions board rows piece (take status-idx acceptable-statuses))
-              (get-open-position adj-pieces row))
-            (get-open-position adj-pieces row)))))))
+              (get-open-positions adj-pieces row))
+            (get-open-positions adj-pieces row)))))))
 
 (defn get-best-move
   "Determines from the current player turn what the best move should be.
@@ -48,15 +62,13 @@
   (if (and (:last-turn game) (get-in game [:board 1 1]))
     (let [last-position (:position (:last-turn game))
           piece-in-play (:game-piece (:player (:turn game)))
-          adj-rows (get-adjacent-rows (:board game) last-position)
+          adj-rows (get-adjacent-rows last-position)
           board (:board game)]
       (or
         (some ;;see if there are any wins we can take this very second
-          #(filter-positions board % piece-in-play [:win])
-          (map
-            #(get-adjacent-rows board %)
-            (get-piece-locations board nil)))
-      (filter-positions board adj-rows piece-in-play [:win :threat])))
+          #(first (filter-positions board % piece-in-play [:win]))
+          (map get-adjacent-rows (get-piece-locations board nil)))
+      (first (filter-positions board adj-rows piece-in-play [:win :threat]))))
     [1 1]))
 
 (defn get-offensive-move ;;TODO: add personal fouls though... not in my house
@@ -70,8 +82,10 @@
   ([board positions piece-in-play]
     (loop [contested-position nil
            [position & positions-remaining] positions]
-      (let [adj-rows (get-adjacent-rows board position)
-            find-pos #(filter-positions board adj-rows piece-in-play %)]
+      (let [adj-rows (get-adjacent-rows position)
+            find-pos #(most-contested-position
+                        board
+                        (filter-positions board adj-rows piece-in-play %))]
         (let [[status position]
                 (some #(when (last %) %) [
                   [:win       (find-pos [:win])]

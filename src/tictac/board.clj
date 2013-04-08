@@ -11,20 +11,20 @@
     false
     true))
 
-(defn get-open-position
-  "Returns the first open board position on a row given the row and the row type"
+(defn get-open-positions
+  "Returns a list of open board positions on a row given the row and the row type"
   [row row-type]
-  (let [idx (.indexOf row nil)]
-    (if (>= idx 0)
+  (let [idxs (keep identity (map #(if %1 nil %2) row (range 3)))]
+    (if (>= (count idxs) 0)
       (case row-type
-          :row-0 ([[0 0][0 1][0 2]] idx)
-          :row-1 ([[1 0][1 1][1 2]] idx)
-          :row-2 ([[2 0][2 1][2 2]] idx)
-          :col-0 ([[0 0][1 0][2 0]] idx)
-          :col-1 ([[0 1][1 1][2 1]] idx)
-          :col-2 ([[0 2][1 2][2 2]] idx)
-          :diagonal-upper-left  ([[0 0][1 1][2 2]] idx)
-          :diagonal-upper-right ([[0 2][1 1][2 0]] idx)
+          :row-0 (map [[0 0][0 1][0 2]] idxs)
+          :row-1 (map [[1 0][1 1][1 2]] idxs)
+          :row-2 (map [[2 0][2 1][2 2]] idxs)
+          :col-0 (map [[0 0][1 0][2 0]] idxs)
+          :col-1 (map [[0 1][1 1][2 1]] idxs)
+          :col-2 (map [[0 2][1 2][2 2]] idxs)
+          :diagonal-upper-left  (map [[0 0][1 1][2 2]] idxs)
+          :diagonal-upper-right (map [[0 2][1 1][2 0]] idxs)
           ))))
 
 (defn get-position-by-idx
@@ -73,17 +73,17 @@
 
 (defn get-adjacent-rows
   "Returns sequence of rows of adjacent board positions for a given board and position"
-  [game-board position]
-  (case (position 0);;which row are we at
-    0 (case (position 1)
+  [[row col]]
+  (case row;;which row are we at
+    0 (case col
       0 [:diagonal-upper-left :col-0 :row-0]
       1 [:row-0 :col-1]
       2 [:diagonal-upper-right :col-2 :row-0])
-    1 (case (position 1)
+    1 (case col
       0 [:row-1 :col-0]
       1 [:diagonal-upper-left :diagonal-upper-right :row-1 :col-1]
       2 [:row-1 :col-2])
-    2 (case (position 1)
+    2 (case col
       0 [:diagonal-upper-right :col-0 :row-2]
       1 [:row-2 :col-1]
       2 [:diagonal-upper-left :col-2 :row-2])))
