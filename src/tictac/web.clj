@@ -1,6 +1,7 @@
 ;;borrowing from http://github.com/magomimmo/modern-cljs
 (ns tictac.web
-  (:use tictac.bestmove)
+  (:use tictac.bestmove
+        tictac.core)
   (:require [compojure.core :refer [defroutes GET POST]]
             [compojure.route :refer [resources not-found]]
             [compojure.handler :refer [site]]
@@ -19,6 +20,19 @@
     (if (.contains ["X" "O"] value)
       (keyword value)
       value)))
+
+(defn parse-json-game
+  "Parses a game from json."
+  [bod]
+  (with-open [rdr (clojure.java.io/reader bod)] ;check out mah bod
+    (let [parse-board
+            (comp vec (partial map (comp vec (partial map keyword))));(("a" "b")("c" "d")) -> [[:a :b][:c :d]]
+          parse-game
+            #(assoc-in % [:board] (parse-board (:board %))) ;parse the board, and return game with new board
+          game
+            (json/read-str (slurp rdr) :key-fn keyword :value-fn json-value-parser)]
+      (parse-game game))))
+
 ;; defroutes macro defines a function that chains individual route
 ;; functions together. The request map is passed to each function in
 ;; turn, until a non-nil response is returned.
@@ -27,10 +41,13 @@
   (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
   ;; ask computer what they'd move next
   (POST "/move" {bod :body}
-    (with-open [rdr (clojure.java.io/reader bod)] ;check out mah bod
-      (let [game (json/read-str (slurp rdr) :key-fn keyword :value-fn json-value-parser)
-           parsed-game (assoc-in game [:board] (vec (map #(vec (map keyword %)) (:board game))))]
-        (json-response (get-computer-move parsed-game)))))
+    (json-response
+      (get-computer-move
+        (parse-json-game bod))))
+  (POST "/detect-win" {bod :body}
+    (json-response
+      (detect-win
+        (parse-json-game bod))))
   ;; to server static pages saved in resources/public directory
   (resources "/")
   ;; if page is not found

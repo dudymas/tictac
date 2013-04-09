@@ -69,12 +69,9 @@
         position (:position last-turn)
         piece (:game-piece (:player last-turn))
         row-list (get-adjacent-rows position)
-        adj-list (map #(get-adjacent-pieces game-board %) row-list)]
-    (if (reduce
-          (fn [result,next-row] (or result (is-row-complete next-row piece)))
-          false
-          adj-list)
-      (:player last-turn))))
+        test-row (comp #(is-row-complete % piece) (partial get-adjacent-pieces game-board))]
+    (when-let [result (some #(if (test-row %) %) row-list)]
+      (assoc-in (:player last-turn) [:winning-row] result))))
 
 (defn is-game-over
   "Returns true or winning player if game is over. True indicates no one won.

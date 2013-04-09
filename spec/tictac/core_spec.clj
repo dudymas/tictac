@@ -66,8 +66,10 @@
       (should= game-updated (set-player-piece game p1 :X))))
 
   (it "detects a winner"
-    (should= player-computer (detect-win winning-game-x))
-    (should= player-human (detect-win winning-game-o)))
+    (let [winning-computer (assoc-in player-computer [:winning-row] :diagonal-upper-right)
+          winning-human    (assoc-in player-human [:winning-row] :row-0)]
+      (should= winning-computer (detect-win winning-game-x))
+      (should= winning-human (detect-win winning-game-o))))
   (it "detects when no one has won yet"
     (should= nil (detect-win unfinished-game)))
   (it "detects when the game is over"
