@@ -12,7 +12,7 @@
 			<div class="position-grid">
 				<span ng-controller="rowCtrl" ng-repeat="row in board">
 					<div ng-click="setPiece($index)" class="position" ng-repeat="piece in row">{{piece}}</div>
-					<span class="row-divider"></span>
+					<span class="row strike-through diag slope-down"></span>
 				</span>
 			</div>
 		</div>
