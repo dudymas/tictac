@@ -54,18 +54,27 @@ body {
 }
 
 .row.col-0{
-	left: 38px;
+	left: 45px;
+	width: 45px;
+	height: 300px;
+	border-right: solid black 10px;
 }
 
 .row.col-1{
-	left: 138px;
+	left: 145px;
+	width: 45px;
+	height: 300px;
+	border-right: solid black 10px;
 }
 
 .row.col-2{
-	left: 238px;
+	left: 245px;
+	width: 45px;
+	height: 300px;
+	border-right: solid black 10px;
 }
 
-.row.diag.slope-up {
+.row.diagonal-upper-right {
 	transform:         rotate(-45deg);
 	-ms-transform:     rotate(-45deg); /* IE 9 */
 	-webkit-transform: rotate(-45deg); /* Safari and Chrome */
@@ -76,7 +85,7 @@ body {
 	left: -44px;
 }
 
-.row.diag.slope-down {
+.row.diagonal-upper-left {
 	transform:         rotate(45deg);
 	-ms-transform:     rotate(45deg); /* IE 9 */
 	-webkit-transform: rotate(45deg); /* Safari and Chrome */

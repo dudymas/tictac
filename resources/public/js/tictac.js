@@ -60,6 +60,7 @@ angular.module("tictac", [])
 				setTimeout(function(){
 					swapTurn(humanPlayer, position);
 					Computer.requestMove(game,function waitComputerAjax(compPosition) {
+						if (!compPosition || !compPosition.length) return;
 						game.board[compPosition[0]][compPosition[1]] = computerPlayer.piece;
 						swapTurn(computerPlayer, compPosition);
 					});
@@ -87,6 +88,11 @@ angular.module("tictac", [])
 function boardCtrl ($scope, Board, Turn) {
 	$scope.board = Board.getData();
 	$scope.turn = Turn.getData();
+}
+
+function winIndicatorCtrl ($scope, Game) {
+	$scope.winningRow = "";
+	$scope.game = Game.getData();
 }
 
 function rowCtrl ($scope, Turn, Game) {
