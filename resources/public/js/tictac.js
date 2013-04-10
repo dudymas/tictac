@@ -34,7 +34,7 @@ angular.module("tictac", [])
 		};
 		return new Computer();
 	})
-	.factory("Game", function(Player,Computer,Board, Turn) {
+	.factory("Game", function(Player,Computer,Board,Turn,$http) {
 		var humanPlayer = Player.getData();
 		var computerPlayer = Computer.getData();
 		var game = {
@@ -54,6 +54,9 @@ angular.module("tictac", [])
 			if (!game["last-turn"].player)
 				game["last-turn"].player = computerPlayer;
 		}
+		Game.prototype.detectWin = function() {
+			return $http.post('/detect-win', game).then(function(d) {if(d) return d["winning-row"];});
+		};
 		Game.prototype.getData = function() {return game; };
 		Game.prototype.move = function(player, position) {
 			if (humanPlayer === player && computerPlayer["is-on"]) {
@@ -93,6 +96,9 @@ function boardCtrl ($scope, Board, Turn) {
 function winIndicatorCtrl ($scope, Game) {
 	$scope.winningRow = "";
 	$scope.game = Game.getData();
+	$scope.$watch("game['last-turn']", function() {
+		$scope.winningRow = Game.detectWin();
+	});
 }
 
 function rowCtrl ($scope, Turn, Game) {

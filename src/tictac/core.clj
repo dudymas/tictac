@@ -64,14 +64,15 @@
 (defn detect-win
   "Returns a winner if someone has won with the :last-turn, otherwise nil"
   [game]
-  (let [game-board (:board game)
-        last-turn (:last-turn game)
-        position (:position last-turn)
-        piece (:game-piece (:player last-turn))
-        row-list (get-adjacent-rows position)
-        test-row (comp #(is-row-complete % piece) (partial get-adjacent-pieces game-board))]
-    (when-let [result (some #(if (test-row %) %) row-list)]
-      (assoc-in (:player last-turn) [:winning-row] result))))
+  (if (get-in game [:last-turn :position])
+    (let [game-board (:board game)
+          last-turn (:last-turn game)
+          position (:position last-turn)
+          piece (:game-piece (:player last-turn))
+          row-list (get-adjacent-rows position)
+          test-row (comp #(is-row-complete % piece) (partial get-adjacent-pieces game-board))]
+      (when-let [result (some #(if (test-row %) %) row-list)]
+        (assoc-in (:player last-turn) [:winning-row] result)))))
 
 (defn is-game-over
   "Returns true or winning player if game is over. True indicates no one won.
