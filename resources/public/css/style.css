@@ -4,6 +4,10 @@ body {
 	width: 100%;
 }
 
+.content{
+	min-height: 300px;
+}
+
 #foot {
 	margin: 2em;
 	width: 650px;

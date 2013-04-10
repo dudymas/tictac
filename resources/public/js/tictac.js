@@ -7,13 +7,13 @@ angular.module("tictac", [])
 		return new Turn();
 	})
 	.factory("Player", function (){
-		var player = {piece : "O", type: "human"};
+		var player = {"game-piece" : "O", type: "human"};
 		var Player = function Player () {};
 		Player.prototype.getData = function() {return player; };
 		return new Player();
 	})
 	.factory("Computer", function($http) {
-		var computer = {piece : "X", type: "computer", "is-on": true, online: true};
+		var computer = {"game-piece" : "X", type: "computer", "is-on": true, online: true};
 		computer["status"] = "ready for request";
 		var Computer = function Computer () {};
 		Computer.prototype.getData = function() {return computer; };
@@ -54,17 +54,34 @@ angular.module("tictac", [])
 			if (!game["last-turn"].player)
 				game["last-turn"].player = computerPlayer;
 		}
+		Game.prototype.reset = function() {
+			game.won = false;
+			for (var i = 0; i < game.board.length; i++)
+				for (var j = 0; j < game.board[i].length; j++)
+					game.board[i][j] = null;
+			game.turn.player = Player.getData();
+		};
 		Game.prototype.detectWin = function() {
-			return $http.post('/detect-win', game).then(function(d) {if(d) return d["winning-row"];});
+			var result = $http.post('/detect-win', game);
+			result.success(function() {});//noop
+			return result.then(function(r) {
+					if (r.data && r.data["winning-row"]) {
+						game.won = true;
+						return r.data["winning-row"];
+					}
+					else
+						return null;
+				});//show the row
 		};
 		Game.prototype.getData = function() {return game; };
 		Game.prototype.move = function(player, position) {
+			if (game.won) return false;//no more moves allowed. Game is over
 			if (humanPlayer === player && computerPlayer["is-on"]) {
 				setTimeout(function(){
 					swapTurn(humanPlayer, position);
 					Computer.requestMove(game,function waitComputerAjax(compPosition) {
 						if (!compPosition || !compPosition.length) return;
-						game.board[compPosition[0]][compPosition[1]] = computerPlayer.piece;
+						game.board[compPosition[0]][compPosition[1]] = computerPlayer["game-piece"];
 						swapTurn(computerPlayer, compPosition);
 					});
 				}, 0); //just do this after the caller has finished
@@ -94,11 +111,13 @@ function boardCtrl ($scope, Board, Turn) {
 }
 
 function winIndicatorCtrl ($scope, Game) {
-	$scope.winningRow = "";
 	$scope.game = Game.getData();
 	$scope.$watch("game['last-turn']", function() {
-		$scope.winningRow = Game.detectWin();
+		$scope.row = Game.detectWin();//promise
 	});
+	$scope.$watch("game.won", function () {
+		if (!$scope.game.won) $scope.row = null;//check for a reset
+	})
 }
 
 function rowCtrl ($scope, Turn, Game) {
@@ -106,17 +125,13 @@ function rowCtrl ($scope, Turn, Game) {
 		var turn = Turn.getData();
 		//only update the board row if the game allows a move
 		if (Game.move(turn.player, [$scope.$index, pos]))
-			$scope.row[pos] = turn.player.piece;
+			$scope.row[pos] = turn.player["game-piece"];
 	};
 }
 
 function gameCtrl ($scope, Game, Player) {
 	$scope.reset = function() {
-		var game = Game.getData();
-		for (var i = 0; i < game.board.length; i++)
-			for (var j = 0; j < game.board[i].length; j++)
-				game.board[i][j] = null;
-		game.turn.player = Player.getData();
+		var game = Game.reset();
 	};
 }
 

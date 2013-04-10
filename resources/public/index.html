@@ -4,13 +4,13 @@
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<div class="content">
+	<div class="ng-cloak content">
 		<div ng-controller="boardCtrl" id="board">
 			<div class="turn-info">
-				<span>The next turn will be : '{{turn.player.piece}}'</span>
+				<span>The next turn will be : '{{turn.player["game-piece"]}}'</span>
 			</div>
 			<div class="position-grid">
-				<span ng-controller="winIndicatorCtrl" ng-show="winningRow" class="row strike-through {{winningRow}}"></span>
+				<span ng-controller="winIndicatorCtrl" ng-show="row" class="row strike-through {{row}}"></span>
 				<span ng-controller="rowCtrl" ng-repeat="row in board">
 					<div ng-click="setPiece($index)" class="position" ng-repeat="piece in row">{{piece}}</div>
 				</span>
