@@ -26,7 +26,7 @@
     (filter #(.contains [:diagonal-upper-left :diagonal-upper-right] %) rows)
     (filter #(.contains [:row-0 :row-1 :row-2 :col-0 :col-1 :col-2] %) rows)))
 
-(defn most-contested-position
+(defn sort-contested-positions
   "Given a list of positions, returns the most contested one."
   [board positions]
   (let [count-contested-rows
@@ -35,7 +35,24 @@
               (keep identity
                 (map get-row-status
                   (map #(get-adjacent-pieces board %) (get-adjacent-rows p))))))]
-    (last (sort-by count-contested-rows positions))))
+    (sort-by count-contested-rows positions)))
+
+(defn threaten-position
+  "Given an open spot, return the most contested position that can be used to
+  threaten that position. Otherwise (if no threats can be made) return nil."
+  [board piece position]
+  (if (get-in board position)
+    nil ;can't threaten!
+    (let [adj-rows (get-adjacent-rows position)
+          test-board (assoc-in board position :_);fill the position
+          row-with-room #(.contains (get-adjacent-pieces test-board %) nil)
+          can-row-threaten #(-> (get-adjacent-pieces test-board %) (.contains piece))
+          get-threat #(-> (get-adjacent-pieces test-board %) (get-open-positions %) (first))]
+      (last
+        (sort-contested-positions board
+          (map get-threat
+            (filter can-row-threaten
+              (filter row-with-room adj-rows))))))))
 
 (defn filter-positions
   "Given a list of acceptable statuses and rows on a board for a piece,
@@ -71,6 +88,16 @@
       (first (filter-positions board adj-rows piece-in-play [:win :threat]))))
     [1 1]))
 
+(defn get-best-threat
+  "Tries to predict which threat has tbe best outcome and return it. Best threats
+  force the opponent to choose a less contested row to block a threat."
+  [game]
+  (let [board (:board game)
+        piece-in-play (get-in game [:turn :player :game-piece])
+        open-positions (get-piece-locations board nil)
+        bad-move (first (sort-contested-positions board open-positions))]
+    (threaten-position board piece-in-play bad-move)))
+
 (defn get-offensive-move ;;TODO: add personal fouls though... not in my house
   "Tries to choose either winning moves or moves to gain a contested row."
   ([game]
@@ -83,9 +110,9 @@
     (loop [contested-position nil
            [position & positions-remaining] positions]
       (let [adj-rows (get-adjacent-rows position)
-            find-pos #(most-contested-position
-                        board
-                        (filter-positions board adj-rows piece-in-play %))]
+            find-pos #(last (sort-contested-positions
+                                    board
+                                    (filter-positions board adj-rows piece-in-play %)))]
         (let [[status position]
                 (some #(when (last %) %) [
                   [:win       (find-pos [:win])]
@@ -103,5 +130,6 @@
   [game]
   (some #(do @%) [ ;;lazy execute these until we get something
     (delay (get-best-move game))
+    (delay (get-best-threat game))
     (delay (get-offensive-move game))
     (delay (take 1 (get-piece-locations (:board game) nil)))]))

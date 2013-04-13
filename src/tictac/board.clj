@@ -13,19 +13,21 @@
 
 (defn get-open-positions
   "Returns a list of open board positions on a row given the row and the row type"
-  [row row-type]
-  (let [idxs (keep identity (map #(if %1 nil %2) row (range 3)))]
-    (if (>= (count idxs) 0)
-      (case row-type
-          :row-0 (map [[0 0][0 1][0 2]] idxs)
-          :row-1 (map [[1 0][1 1][1 2]] idxs)
-          :row-2 (map [[2 0][2 1][2 2]] idxs)
-          :col-0 (map [[0 0][1 0][2 0]] idxs)
-          :col-1 (map [[0 1][1 1][2 1]] idxs)
-          :col-2 (map [[0 2][1 2][2 2]] idxs)
-          :diagonal-upper-left  (map [[0 0][1 1][2 2]] idxs)
-          :diagonal-upper-right (map [[0 2][1 1][2 0]] idxs)
-          ))))
+  ([row-type] ;overload useful for just getting position of a row index
+    (get-open-positions [nil nil nil] row-type))
+  ([row row-type]
+    (let [idxs (keep identity (map #(if %1 nil %2) row (range 3)))]
+      (if (>= (count idxs) 0)
+        (case row-type
+            :row-0 (map [[0 0][0 1][0 2]] idxs)
+            :row-1 (map [[1 0][1 1][1 2]] idxs)
+            :row-2 (map [[2 0][2 1][2 2]] idxs)
+            :col-0 (map [[0 0][1 0][2 0]] idxs)
+            :col-1 (map [[0 1][1 1][2 1]] idxs)
+            :col-2 (map [[0 2][1 2][2 2]] idxs)
+            :diagonal-upper-left  (map [[0 0][1 1][2 2]] idxs)
+            :diagonal-upper-right (map [[0 2][1 1][2 0]] idxs)
+            )))))
 
 (defn get-position-by-idx
   "Gets the position of a move by its index"
@@ -68,8 +70,7 @@
     :diagonal-upper-left
       (list ((game-board 0) 0) ((game-board 1) 1) ((game-board 2) 2))
     :diagonal-upper-right
-      (list ((game-board 0) 2) ((game-board 1) 1) ((game-board 2) 0))
-    ))
+      (list ((game-board 0) 2) ((game-board 1) 1) ((game-board 2) 0))))
 
 (defn get-adjacent-rows
   "Returns sequence of rows of adjacent board positions for a given board and position"

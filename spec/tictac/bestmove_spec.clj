@@ -90,13 +90,13 @@
       (let [row [nil nil nil]]
         (should= nil (get-row-status row :X)))))
 
-  (context "most-contested-position"
+  (context "sort-contested-positions"
     (tags :bm-contested)
     (it "returns a position"
-      (should= [1 1] (most-contested-position (:board empty-game) [[1 1]])))
+      (should= [1 1] (last (sort-contested-positions (:board empty-game) [[1 1]]))))
     (it "returns a position that has contested rows over one that doesn't"
-      (should= [0 0] (most-contested-position threatened-board-o [[0 2][0 0]]))
-      (should= [2 2] (most-contested-position threatened-board-o [[0 0][2 2][0 2]]))))
+      (should= [0 0] (last (sort-contested-positions threatened-board-o [[0 2][0 0]])))
+      (should= [2 2] (last (sort-contested-positions threatened-board-o [[0 0][2 2][0 2]])))))
 
   (context "filter-positions"
     (it "filters positions by row status"
@@ -122,6 +122,32 @@
       (should= [0 2] (get-best-move open-game-o)))
     (it "returns nil if there is no best move"
       (should-not (get-best-move open-game-x)))))
+
+(describe "strategy (forcing the opponent to take bad moves)"
+  (tags :bm :bm-strategy)
+  (context "threaten-position"
+    (it "returns a position that threatens another position"
+      (let [board
+            [[nil nil :O ]
+             [nil :X  nil]
+             [:O  nil nil]]
+            position [2 1]]
+        (should= [0 1] (threaten-position board :X position))))
+    (it "returns a position that contests more than other threats"
+      (let [board
+            [[nil nil :X ]
+             [nil :X  nil]
+             [nil nil nil]]
+            position [1 2]]
+        (should= [2 2] (threaten-position board :X position)))))
+  (context "get-best-threat"
+    (it "returns a position that threatens best"
+      (let [board
+            [[nil nil :O ]
+             [nil :X  nil]
+             [:O  nil nil]]
+            game (assoc-in open-game-o [:board] board)]
+        (should (.contains [[0 1][1 0][2 1][1 2]] (get-best-threat game)))))))
 
 (describe "offense (attempting to win)"
   (tags :bm :bm-offense)
