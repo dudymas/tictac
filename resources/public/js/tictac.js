@@ -140,6 +140,8 @@ function computerCtrl ($scope, Computer) {
 }
 
 function debugCtrl ($scope, Player, Computer, Board, Game, Turn) {
+	if (location.search.indexOf("debug") >= 0)
+		$scope.debugging = true;
 	//show info about our state
 	$scope.data = {};
 	$scope.data.board = Board.getData();

@@ -28,7 +28,7 @@
 				<label>Computer requests moves from server:</label>
 				<input type="checkbox" ng-model="computer.online">
 			</div>
-			<div ng-controller="debugCtrl" class="debug">
+			<div ng-controller="debugCtrl" class="debug" ng-show="debugging">
 				<span class="debug-info" ng-repeat="(attr,val) in data">
 					<dl>{{attr}}:</dl>
 						<dd>{{val}}</dd>
