@@ -75,7 +75,7 @@ angular.module("tictac", [])
 		};
 		Game.prototype.getData = function() {return game; };
 		Game.prototype.move = function(player, position) {
-			if (game.won) return false;//no more moves allowed. Game is over
+			if (game.board[position[0]][position[1]] !== null || game.won) return false;
 			if (humanPlayer === player && computerPlayer["is-on"]) {
 				setTimeout(function(){
 					swapTurn(humanPlayer, position);
