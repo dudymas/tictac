@@ -50,10 +50,12 @@
 
 (describe "CLI"
   (tags :cli)
-  (it "displays the game board"
-    (let [display [[1 2 3][4 "O" 6][7 8 9]]
-          board   [[nil nil nil][nil :O nil][nil nil nil]]]
-      (should= display (display-board board))))
+
+  (context "display-board"
+    (it "displays the game board"
+      (let [display [[1 2 3][4 "O" 6][7 8 9]]
+            board   [[nil nil nil][nil :O nil][nil nil nil]]]
+        (should= display (display-board board)))))
 
   (context "get-input-while"
     (tags :cli-input)
@@ -69,12 +71,11 @@
     (it "ignores casing on the input"
       (let [player (assoc-in player-human [:input] (make-phony-input "o"))
             updated-game (ask-player-for-piece game player)]
-        (should= :O (:game-piece ((:players updated-game) 0))))))
-
-  (it "selects the left over piece for the computer player"
-    (let [alternate-game (set-player-piece game player-human :X)
-          updated-game (ask-player-for-piece alternate-game player-computer)]
-      (should= :O (:game-piece ((:players updated-game) 1)))))
+        (should= :O (:game-piece ((:players updated-game) 0)))))
+    (it "selects the left over piece for the computer player"
+      (let [alternate-game (set-player-piece game player-human :X)
+            updated-game (ask-player-for-piece alternate-game player-computer)]
+        (should= :O (:game-piece ((:players updated-game) 1))))))
 
   (context "ask-player-for-move"
     (tags :cli-input :cli-move)
