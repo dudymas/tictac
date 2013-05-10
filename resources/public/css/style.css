@@ -58,24 +58,27 @@ body {
 }
 
 .row.col-0{
-	left: 45px;
+	left: 25px;
 	width: 45px;
 	height: 300px;
 	border-right: solid black 10px;
+	border-bottom: 0;
 }
 
 .row.col-1{
-	left: 145px;
+	left: 125px;
 	width: 45px;
 	height: 300px;
 	border-right: solid black 10px;
+	border-bottom: 0;
 }
 
 .row.col-2{
-	left: 245px;
+	left: 225px;
 	width: 45px;
 	height: 300px;
 	border-right: solid black 10px;
+	border-bottom: 0;
 }
 
 .row.diagonal-upper-right {
