@@ -196,7 +196,8 @@
     (it "takes the best move"
       (should= [1 1] (get-computer-move empty-game)))
     (it "guesses when there is no best move"
-      (should-not (nil? (get-computer-move game-with-one-opening))))
+      (should-not (nil? (get-computer-move game-with-one-opening)))
+      (should= [1 2] (get-computer-move game-with-one-opening)))
     (it "picks a move other than center if it is taken"
       (should-not (.contains [nil [1 1]] (get-computer-move game-with-center-filled))))
     (it "takes a win before guessing"

@@ -132,4 +132,4 @@
     (delay (get-best-move game))
     (delay (get-best-threat game))
     (delay (get-offensive-move game))
-    (delay (take 1 (get-piece-locations (:board game) nil)))]))
+    (delay (first (take 1 (get-piece-locations (:board game) nil))))]))
