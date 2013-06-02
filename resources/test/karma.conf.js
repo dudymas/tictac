@@ -10,7 +10,10 @@ basePath = '';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  '../public/js/tictac-*.js'
+  '../public/js/angular.min.js',
+  'js/angular-mocks.js',
+  '../public/js/tictac-*.js',
+  'js/tictac-*.js'
 ];
 
 
