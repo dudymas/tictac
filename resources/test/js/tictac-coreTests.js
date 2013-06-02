@@ -1,4 +1,4 @@
-describe('core', function () {
+describe('tictac-core', function () {
 	beforeEach(function() {
 		module('tictac-core');
 	});

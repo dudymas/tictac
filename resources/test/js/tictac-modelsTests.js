@@ -1,5 +1,5 @@
 
-describe('models', function(){
+describe('tictac-models', function(){
 	beforeEach(function() {
 		module('tictac-models');
 	});
