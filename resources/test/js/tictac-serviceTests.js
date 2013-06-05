@@ -21,8 +21,10 @@ describe('tictac-services', function () {
 		it('is a function', function() {
 			expect(typeof(computerMove)).toBe("function");
 		});
-		it('calls $http', function() {
-			//computerMove();
+		it('POSTs to /move', function() {
+			$httpBackend.expectPOST('/move').respond(200, null);
+			computerMove();
+			$httpBackend.flush();
 		});
 		it('sends the CurrentGame');
 		it('returns the move it recieved');
