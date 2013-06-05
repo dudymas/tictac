@@ -58,7 +58,11 @@ describe('tictac-core', function () {
 		});
 	});
 	describe('CurrentGame', function() {
-		it('has the current CurrentBoard');
+		it('has the current CurrentBoard', function() {
+			inject(function(CurrentBoard, CurrentGame) {
+				expect(CurrentGame.board).toBe(CurrentBoard);
+			});
+		});
 		it('has the current players', function() {
 			inject(function(Player1, Player2, CurrentGame) {
 				while(CurrentGame.players.length > 0)
