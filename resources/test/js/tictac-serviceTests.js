@@ -13,9 +13,10 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('ComputerMove', function() {
-		var computerMove;
-		beforeEach(inject(function(ComputerMove) {
+		var computerMove, game;
+		beforeEach(inject(function(CurrentGame, ComputerMove) {
 			computerMove = ComputerMove;
+			game = CurrentGame;
 		}));
 
 		it('is a function', function() {
@@ -26,8 +27,17 @@ describe('tictac-services', function () {
 			computerMove();
 			$httpBackend.flush();
 		});
-		it('sends the CurrentGame');
-		it('returns the move it recieved');
+		it('sends the CurrentGame', function() {
+			$httpBackend.expectPOST('/move', game).respond(200, null);
+			computerMove();
+			$httpBackend.flush();
+		});
+		it('returns the move it recieved', function() {
+			var mooove = "moooove it";
+			$httpBackend.expectPOST('/move', game).respond(200, mooove);
+			computerMove().then(function(result) {expect(result).toBe(mooove);});
+			$httpBackend.flush();
+		});
 	});
 	it('has win detection service', function () {
 		inject(function(DetectWin){

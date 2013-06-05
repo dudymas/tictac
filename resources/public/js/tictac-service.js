@@ -1,7 +1,7 @@
-angular.module('tictac-services',[])
-	.factory('ComputerMove', function($http){
+angular.module('tictac-services',['tictac-core'])
+	.factory('ComputerMove', function(CurrentGame, $http){
 		var ComputerMoveFactory = function ComputerMoveFactory () {
-			$http.post('/move', null);
+			return $http.post('/move', CurrentGame).then(function(res) {return res.data;});
 		};
 		return ComputerMoveFactory;
 	})
