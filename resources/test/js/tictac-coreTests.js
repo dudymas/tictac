@@ -21,7 +21,7 @@ describe('tictac-core', function () {
 		it('should be the first player', function() {
 			inject(function(CurrentGame) {
 				expect(CurrentGame.players).toBeDefined();
-				//expect(Game.players[0]).toBe(player);
+				expect(CurrentGame.players[0]).toBe(player);
 			});
 		});
 	});
@@ -55,6 +55,15 @@ describe('tictac-core', function () {
 	it('has CurrentGame', function () {
 		inject(function(CurrentGame){
 			expect(CurrentGame).any;
+		});
+	});
+	describe('CurrentGame', function() {
+		it('has the current CurrentBoard');
+		it('has the current players', function() {
+			inject(function(Player1, Player2, CurrentGame) {
+				while(CurrentGame.players.length > 0)
+					expect([Player1, Player2]).toContain(CurrentGame.players.pop());
+			});
 		});
 	});
 });
