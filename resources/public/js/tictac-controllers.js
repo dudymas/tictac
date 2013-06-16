@@ -8,8 +8,11 @@ angular.module('tictac-controllers', ['tictac-core', 'tictac-services'])
 			CurrentGame.reset();
 		};
 	})
-	.controller('rowCtrl', function($scope) {
-		
+	.controller('rowCtrl', function($scope, $MakeMove, CurrentGame) {
+		$scope.setPiece = function(idx) {
+			var pos = [$scope.$index, idx];
+			$MakeMove(CurrentGame.turn.player, pos);
+		};
 	})
 	.controller('winIndicatorCtrl', function($scope) {
 

@@ -1,5 +1,5 @@
 describe('tictac-controllers', function () {
-	var game;
+	var game, moveSpy;
 	beforeEach(function() {
 		game = {board : [[null]], turn : {player: null}};
 		game.reset = jasmine.createSpy("'game reset'");
@@ -8,6 +8,8 @@ describe('tictac-controllers', function () {
 				return game;
 			};
 			$provide.factory('CurrentGame', gameSpy);
+			moveSpy = jasmine.createSpy('"$MakeMove"');
+			$provide.factory('$MakeMove', function() {return moveSpy});
 		});
 	});
 
@@ -68,6 +70,36 @@ describe('tictac-controllers', function () {
 		})
 	});
 	describe('rowCtrl', function () {
+		var ctrl, scope;
+
+		beforeEach(function() {
+			inject(function($controller) {
+				scope = {$index: 9001 };//over nine-thousand!!!!
+				ctrl = $controller('rowCtrl', {$scope: scope});
+			});
+		});
+
+		it('should define setPiece() on scope', function () {
+			expect(scope.setPiece).toBeDefined();
+			expect(typeof(scope.setPiece)).toBe('function');
+		});
+		describe('scope.setPiece', function () {
+			beforeEach(function () {
+				game.turn.player = "current player";
+				scope.setPiece(1);
+			});
+
+			it('should call $MakeMove', function () {
+				expect(moveSpy).toHaveBeenCalled();
+			});
+			it('should pass player who is in CurrentGame.turn', function () {
+				expect(moveSpy.mostRecentCall.args[0]).toBe(game.turn.player);
+			});
+			it('should pass $index and position to $MakeMove', function () {
+				expect(moveSpy.mostRecentCall.args[1][0]).toBe(scope.$index);
+				expect(moveSpy.mostRecentCall.args[1][1]).toBe(1);
+			});
+		});
 	});
 
 	it('has winIndicatorCtrl', function () {
