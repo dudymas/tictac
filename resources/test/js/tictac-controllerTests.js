@@ -34,8 +34,8 @@ describe('tictac-controllers', function () {
 		it('should put board in scope', function () {
 			expect(scope.board).toBe(game.board);
 		});
-		it('should put current turn in scope', function () {
-			expect(scope.turn).toBe(game.turn);
+		it('should put current game in scope', function () {
+			expect(scope.game).toBe(game);
 		});
 	});
 
