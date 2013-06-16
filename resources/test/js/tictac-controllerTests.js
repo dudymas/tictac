@@ -10,6 +10,8 @@ describe('tictac-controllers', function () {
 			$provide.factory('CurrentGame', gameSpy);
 			moveSpy = jasmine.createSpy('"$MakeMove"');
 			$provide.factory('$MakeMove', function() {return moveSpy});
+			winSpy = jasmine.createSpy('"DetectWin"');
+			$provide.factory('DetectWin', function() {return winSpy});
 		});
 	});
 
@@ -104,10 +106,45 @@ describe('tictac-controllers', function () {
 
 	it('has winIndicatorCtrl', function () {
 		inject(function($controller) {
-			var winIndicatorCtrl = $controller('winIndicatorCtrl', {$scope : {}});
+			var scope = { $watch : function() {}};
+			var winIndicatorCtrl = $controller('winIndicatorCtrl', {$scope : scope});
 			expect(winIndicatorCtrl).toBeDefined();
 		})
 	});
 	describe('winIndicatorCtrl', function () {
+		var ctrl, scope;
+
+		beforeEach(function() {
+			scope = {};
+			scope.$watch = jasmine.createSpy('"$watch"');
+			inject(function($controller) {
+				ctrl = $controller('winIndicatorCtrl', {$scope: scope});
+			});
+		});
+
+		it('should put CurrentGame on scope.game', function () {
+			expect(scope.game).toBe(game);
+		});
+		it('should define scope.watchLastTurn()', function () {
+			expect(scope.watchLastTurn).toBeDefined();
+			expect(typeof(scope.watchLastTurn)).toBe('function');
+		});
+		describe('scope.watchLastTurn', function () {
+			beforeEach(function() {
+				scope.watchLastTurn();
+			});
+
+			it('should call DetectWin', function () {
+				expect(winSpy).toHaveBeenCalled();
+			});
+		});
+		it('should call $scope.$watch on game["last-turn"] with scope.watchLastTurn', function () {
+			expect(scope.$watch).toHaveBeenCalled();
+			expect(scope.$watch.mostRecentCall.args[0]).toBe('game["last-turn"]');
+			expect(scope.$watch.mostRecentCall.args[1]).toBe(scope.watchLastTurn);
+		});
 	});
 });
+
+
+

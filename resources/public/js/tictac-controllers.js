@@ -14,6 +14,10 @@ angular.module('tictac-controllers', ['tictac-core', 'tictac-services'])
 			$MakeMove(CurrentGame.turn.player, pos);
 		};
 	})
-	.controller('winIndicatorCtrl', function($scope) {
-
+	.controller('winIndicatorCtrl', function($scope, CurrentGame, DetectWin) {
+		$scope.watchLastTurn = function() {
+			DetectWin();
+		};
+		$scope.game = CurrentGame;
+		$scope.$watch('game["last-turn"]', $scope.watchLastTurn);
 	});
