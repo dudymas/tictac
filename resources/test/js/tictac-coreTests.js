@@ -24,6 +24,13 @@ describe('tictac-core', function () {
 				expect(CurrentGame.players[0]).toBe(player);
 			});
 		});
+		it('should default to a human player', function () {
+			expect(player.type).toBeDefined();
+			expect(player.type).toBe('human');
+		});
+		it('should default to be O', function () {
+			expect(player["game-piece"]).toBe('O');
+		});
 	});
 	it('has Player2', function () {
 		inject(function(Player2){
@@ -45,6 +52,13 @@ describe('tictac-core', function () {
 				expect(CurrentGame.players).toBeDefined();
 				expect(CurrentGame.players[1]).toBe(player);
 			});
+		});
+		it('should default to a computer player', function () {
+			expect(player.type).toBeDefined();
+			expect(player.type).toBe('computer');
+		});
+		it('should default to be X', function () {
+			expect(player["game-piece"]).toBe('X');
 		});
 	});
 	it('has CurrentBoard in 3x3 configuration by default', function () {
