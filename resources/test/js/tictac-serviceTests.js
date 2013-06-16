@@ -4,11 +4,12 @@ describe('tictac-services', function () {
 		game = {test : 'game'};
 		module('tictac-services', function($provide) {
 			game.spy = jasmine.createSpy('"CurrentGame factory"');
+			game.board = { update : jasmine.createSpy('"CurrentBoard update"') };
 			var gameSpy = function() {
 				game.spy();
 				return game;
 			};
-			$provide.factory('CurrentGame', gameSpy)
+			$provide.factory('CurrentGame', gameSpy);
 		});
 		inject(function(_$httpBackend_) {
 			$httpBackend = _$httpBackend_;
@@ -85,18 +86,31 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('$MakeMove', function () {
-		var $makeMove;
+		var $makeMove, player, position;
 
 		beforeEach(function() {
 			inject(function($MakeMove) {
 				$makeMove = $MakeMove;
 			});
+			player = {"game-piece": '\m/'};
+			position = [2,5, 3]; //yay, 3d!
 		});
 
 		it('should use CurrentGame', function () {
 			expect(game.spy).toHaveBeenCalled();
 		});
-		it('should try to update the board', function () {});
+		it('should try to update the board', function () {
+			$makeMove(player);
+			expect(game.board.update).toHaveBeenCalled();
+		});
+		it('should update board with game-piece', function () {
+			$makeMove(player);
+			expect(game.board.update.mostRecentCall.args[0]).toBe(player["game-piece"]);
+		});
+		it('should pass the position of the move', function () {
+			$makeMove(player, position);
+			expect(game.board.update.mostRecentCall.args[1]).toBe(position);
+		});
 		it('should not allow moves out of turn', function () {});
 		it('should give computer players a turn', function () {});
 	});
