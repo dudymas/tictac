@@ -1,7 +1,15 @@
 describe('tictac-services', function () {
-	var $httpBackend;
+	var $httpBackend, game;
 	beforeEach(function() {
-		module('tictac-services');
+		game = {test : 'game'};
+		module('tictac-services', function($provide) {
+			game.spy = jasmine.createSpy('"CurrentGame factory"');
+			var gameSpy = function() {
+				game.spy();
+				return game;
+			};
+			$provide.factory('CurrentGame', gameSpy)
+		});
 		inject(function(_$httpBackend_) {
 			$httpBackend = _$httpBackend_;
 		} );
@@ -13,10 +21,9 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('ComputerMove', function() {
-		var computerMove, game;
-		beforeEach(inject(function(CurrentGame, ComputerMove) {
+		var computerMove;
+		beforeEach(inject(function(ComputerMove) {
 			computerMove = ComputerMove;
-			game = CurrentGame;
 		}));
 
 		it('is a function', function() {
@@ -46,10 +53,9 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('DetectWin', function() {
-		var detectWin, game;
-		beforeEach(inject(function(CurrentGame, DetectWin) {
+		var detectWin;
+		beforeEach(inject(function(DetectWin) {
 			detectWin = DetectWin;
-			game = CurrentGame;
 		}));
 
 		it('should be a function', function () {
@@ -71,6 +77,28 @@ describe('tictac-services', function () {
 			detectWin().then(function(d) {expect(d).toBe(result)});
 			$httpBackend.flush();
 		});
+	});
+
+	it('has move making service', function () {
+		inject(function($MakeMove) {
+			expect($MakeMove).toBeDefined();
+		});
+	});
+	describe('$MakeMove', function () {
+		var $makeMove;
+
+		beforeEach(function() {
+			inject(function($MakeMove) {
+				$makeMove = $MakeMove;
+			});
+		});
+
+		it('should use CurrentGame', function () {
+			expect(game.spy).toHaveBeenCalled();
+		});
+		it('should try to update the board', function () {});
+		it('should not allow moves out of turn', function () {});
+		it('should give computer players a turn', function () {});
 	});
 	afterEach(function() {
 	  $httpBackend.verifyNoOutstandingExpectation();

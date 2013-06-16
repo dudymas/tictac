@@ -16,4 +16,8 @@ angular.module('tictac-services',['tictac-core'])
 			return $DataPromise(promise);
 		}
 		return DetectWinFactory;
+	})
+	.factory('$MakeMove', function(CurrentGame) {
+		var MakeMoveFactory = function MakeMoveFactory () {}
+		return MakeMoveFactory;
 	});
