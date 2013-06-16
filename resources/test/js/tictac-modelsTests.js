@@ -6,7 +6,7 @@ describe('tictac-models', function(){
 
 	it('has player', function() {
 		inject(function(Player) {
-			expect(Player).any;
+			expect(Player).toBeDefined();
 		});
 	});
 
@@ -30,7 +30,7 @@ describe('tictac-models', function(){
 	});
 	it('has board', function() {
 		inject(function(Board) {
-			expect(Board).any;
+			expect(Board).toBeDefined();
 		});
 	});
 	describe('board', function () {
@@ -57,7 +57,7 @@ describe('tictac-models', function(){
 	});
 	it('has game', function() {
 		inject(function(Game){
-			expect(Game).any;
+			expect(Game).toBeDefined();
 		});
 	});
 	describe('Game', function () {

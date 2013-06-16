@@ -9,7 +9,7 @@ describe('tictac-services', function () {
 
 	it('has computer move service', function () {
 		inject(function(ComputerMove){
-			expect(ComputerMove).any;
+			expect(ComputerMove).toBeDefined();
 		});
 	});
 	describe('ComputerMove', function() {
@@ -42,7 +42,7 @@ describe('tictac-services', function () {
 
 	it('has win detection service', function () {
 		inject(function(DetectWin){
-			expect(DetectWin).any;
+			expect(DetectWin).toBeDefined();
 		});
 	});
 	describe('DetectWin', function() {

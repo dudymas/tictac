@@ -5,7 +5,7 @@ describe('tictac-core', function () {
 
 	it('has Player1', function () {
 		inject(function(Player1){
-			expect(Player1).any;
+			expect(Player1).toBeDefined();
 		});
 	});
 	describe('Player1', function(){
@@ -27,7 +27,7 @@ describe('tictac-core', function () {
 	});
 	it('has Player2', function () {
 		inject(function(Player2){
-			expect(Player2).any;
+			expect(Player2).toBeDefined();
 		});
 	});
 	describe('Player2', function(){
@@ -49,12 +49,12 @@ describe('tictac-core', function () {
 	});
 	it('has CurrentBoard', function () {
 		inject(function(CurrentBoard){
-			expect(CurrentBoard).any;
+			expect(CurrentBoard).toBeDefined();
 		});
 	});
 	it('has CurrentGame', function () {
 		inject(function(CurrentGame){
-			expect(CurrentGame).any;
+			expect(CurrentGame).toBeDefined();
 		});
 	});
 	describe('CurrentGame', function() {
