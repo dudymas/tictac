@@ -116,13 +116,26 @@ describe('tictac-services', function () {
 			expect(game.board.update.mostRecentCall.args[1]).toBe(position);
 		});
 		it('should not allow moves out of turn', function () {
-			game.turn = { player : {some: "otherperson"} };
+			var otherPlayer = {some: "otherperson"};
+			game.turn = { player : otherPlayer};
 			$makeMove(player);
 			expect(game.board.update).not.toHaveBeenCalled();
+			expect(game.turn.player).toBe(otherPlayer);
+			expect(game['last-turn']).not.toBeDefined();
 		});
 		it('should give next player a turn', function () {
 			$makeMove(player);
 			expect(game.turn.player).toBe(computer);
+			$makeMove(computer);
+			expect(game.turn.player).toBe(player);
+		});
+		it('should update the last-turn of game', function () {
+			var lastTurn = game.turn;
+			var pos = [3,5];
+			$makeMove(player, pos);
+			expect(game["last-turn"]).toBe(lastTurn);
+			expect(game["last-turn"].position).toBe(pos);
+			expect(game.turn).not.toBe(lastTurn);
 		});
 	});
 	afterEach(function() {

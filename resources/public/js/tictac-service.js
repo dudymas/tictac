@@ -21,6 +21,9 @@ angular.module('tictac-services',['tictac-core'])
 		var MakeMoveFactory = function MakeMoveFactory (player, pos) {
 			if (CurrentGame.turn.player == player)
 				CurrentGame.board.update(player["game-piece"], pos);
+			else return;
+			CurrentGame.turn.position = pos;
+			CurrentGame["last-turn"] = CurrentGame.turn;
 			CurrentGame.turn = Turn.create();
 			CurrentGame.turn.player = 
 				player == CurrentGame.players[0] ? CurrentGame.players[1] : CurrentGame.players[0];
