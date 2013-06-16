@@ -28,10 +28,15 @@ angular.module('tictac-models',[])
 	})
 	.factory("Board", function(Row) {
 		var Board = function Board () {};
+		Board.update = function(piece, pos) {
+			if (!this[pos[0]][pos[1]])
+				this[pos[0]][pos[1]] = piece;
+		};
 		Board.create = function(rowCount, rowLength) {
 			var result = [];
 			while(result.length < rowCount)
 				result.push(Row.create(rowLength));
+			result.update = Board.update;
 			return result;
 		};
 		return Board;

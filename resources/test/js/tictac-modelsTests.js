@@ -73,6 +73,25 @@ describe('tictac-models', function(){
 			while(board.length)
 				expect(board.pop().length).toBe(rowLength);
 		});
+		it('should have an update method', function () {
+			expect(board.update).toBeDefined();
+			expect(typeof(board.update)).toBe('function');
+		});
+		describe('Board.update', function () {
+			it('should update the board with a piece', function () {
+				board.update('hi', [0,0]);
+				expect(board[0][0]).toBe('hi');
+			});
+			it('should place piece at the position given', function () {
+				board.update('wee', [1,2]);
+				expect(board[1][2]).toBe('wee');
+			});
+			it('should not alter taken positions', function () {
+				board[1][1] = 'whoop';
+				board.update('deDoo', [1,1]);
+				expect(board[1][1]).toBe('whoop');
+			});
+		});
 	});
 
 	it('has game', function() {
