@@ -39,13 +39,38 @@ describe('tictac-services', function () {
 			$httpBackend.flush();
 		});
 	});
+
 	it('has win detection service', function () {
 		inject(function(DetectWin){
 			expect(DetectWin).any;
 		});
 	});
-	describe('ComputerMove', function() {
+	describe('DetectWin', function() {
+		var detectWin, game;
+		beforeEach(inject(function(CurrentGame, DetectWin) {
+			detectWin = DetectWin;
+			game = CurrentGame;
+		}));
 
+		it('should be a function', function () {
+			expect(typeof(detectWin)).toBe('function');
+		});
+		it('should POST to /detect-win', function () {
+			$httpBackend.expectPOST('/detect-win').respond(null);
+			detectWin();
+			$httpBackend.flush();
+		});
+		it('should send the CurrentGame', function () {
+			$httpBackend.expectPOST('/detect-win', game).respond(null);
+			detectWin();
+			$httpBackend.flush();
+		});
+		it('should return the result', function () {
+			var result = {some:"data"};
+			$httpBackend.expectPOST('/detect-win', game).respond(result);
+			detectWin().then(function(d) {expect(d).toBe(result)});
+			$httpBackend.flush();
+		});
 	});
 	afterEach(function() {
 	  $httpBackend.verifyNoOutstandingExpectation();
