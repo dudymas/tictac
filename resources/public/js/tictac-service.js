@@ -21,7 +21,7 @@ angular.module('tictac-services',['tictac-core'])
 		}
 		return DetectWinFactory;
 	})
-	.factory('$MakeMove', function(CurrentGame, Turn) {
+	.factory('$MakeMove', function(CurrentGame, ComputerMove, Turn) {
 		var MakeMoveFactory = function MakeMoveFactory (player, pos) {
 			if (CurrentGame.turn.player == player && !CurrentGame.win)
 				CurrentGame.board.update(player["game-piece"], pos);
@@ -31,6 +31,10 @@ angular.module('tictac-services',['tictac-core'])
 			CurrentGame.turn = Turn.create();
 			CurrentGame.turn.player = 
 				player == CurrentGame.players[0] ? CurrentGame.players[1] : CurrentGame.players[0];
+			if (CurrentGame.turn.player.type == "computer")
+				ComputerMove().then(function(pos) {
+					MakeMoveFactory(CurrentGame.turn.player, pos);
+				});
 		};
 		return MakeMoveFactory;
 	});

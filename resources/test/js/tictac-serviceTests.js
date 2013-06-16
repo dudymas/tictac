@@ -100,7 +100,7 @@ describe('tictac-services', function () {
 				computerMove = ComputerMove;
 			});
 			player = {"game-piece": '\m/'};
-			computer = {type : 'computer'};
+			computer = {type : 'otherguy'};
 			game.turn = {player: player};
 			position = [2,5, 3]; //yay, 3d!
 			game.players = [player, computer];
@@ -149,6 +149,15 @@ describe('tictac-services', function () {
 			expect(game.board.update).not.toHaveBeenCalled();
 			expect(game.turn.player).toBe(player);
 			expect(game['last-turn']).not.toBeDefined();
+		});
+		it("should move on computer player's behalf ", function () {
+			var computerPos = [2,3];
+			$httpBackend.expectPOST('/move').respond(200, computerPos);
+			game.players[1] = {"game-piece": "peas", type : "computer"};
+			$makeMove(player, [1,1]);
+			$httpBackend.flush();
+			expect(game.board.update.mostRecentCall.args[0]).toBe(game.players[1]["game-piece"]);
+			expect(game.board.update.mostRecentCall.args[1]).toBe(computerPos);
 		});
 	});
 	afterEach(function() {
