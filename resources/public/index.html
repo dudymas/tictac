@@ -1,4 +1,4 @@
-<html ng-app="tictac">
+<html ng-app="tictac-app">
 <head>
 	<title>Tic-Tac-Toe</title>
 	<link rel="stylesheet" href="css/style.css">
@@ -7,10 +7,10 @@
 	<div class="ng-cloak content">
 		<div ng-controller="boardCtrl" id="board">
 			<div class="turn-info">
-				<span>The next turn will be : '{{turn.player["game-piece"]}}'</span>
+				<span>The next turn will be : '{{game.turn.player["game-piece"]}}'</span>
 			</div>
 			<div class="position-grid">
-				<span ng-controller="winIndicatorCtrl" ng-show="row" class="row strike-through {{row}}"></span>
+				<span ng-controller="winIndicatorCtrl" ng-show="game.win" class="row strike-through {{game.win['winning-row']}}"></span>
 				<span ng-controller="rowCtrl" ng-repeat="row in board">
 					<div ng-click="setPiece($index)" class="position" ng-repeat="piece in row">{{piece}}</div>
 				</span>
@@ -22,21 +22,13 @@
 			<div ng-controller="gameCtrl" class="game-controls">
 				<button ng-click="reset()" class="restart-game">Reset Board</button>
 			</div>
-			<div ng-controller="computerCtrl" class="ai-controls">
-				<label>Computer makes moves:</label>
-				<input type="checkbox" ng-model="computer['is-on']">
-				<label>Computer requests moves from server:</label>
-				<input type="checkbox" ng-model="computer.online">
-			</div>
-			<div ng-controller="debugCtrl" class="debug" ng-show="debugging">
-				<span class="debug-info" ng-repeat="(attr,val) in data">
-					<dl>{{attr}}:</dl>
-						<dd>{{val}}</dd>
-				</span>
-			</div>
 		</div>
 	</div>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.3/angular.min.js"></script>
-	<script type="text/javascript" src="js/tictac.js"></script>
+	<script type="text/javascript" src="js/tictac-models.js"></script>
+	<script type="text/javascript" src="js/tictac-core.js"></script>
+	<script type="text/javascript" src="js/tictac-service.js"></script>
+	<script type="text/javascript" src="js/tictac-controllers.js"></script>
+	<script type="text/javascript" src="js/tictac-app.js"></script>
 </body>
 </html>
