@@ -32,11 +32,19 @@ angular.module('tictac-models',[])
 			if (!this[pos[0]][pos[1]])
 				this[pos[0]][pos[1]] = piece;
 		};
+		Board.clear = function() {
+			for (var i = 0; i < this.length; i++) {
+				for (var j = 0; j < this[i].length; j++) {
+					this[i][j] = null;
+				};
+			};
+		};
 		Board.create = function(rowCount, rowLength) {
 			var result = [];
 			while(result.length < rowCount)
 				result.push(Row.create(rowLength));
 			result.update = Board.update;
+			result.clear = Board.clear;
 			return result;
 		};
 		return Board;

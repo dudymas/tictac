@@ -92,6 +92,25 @@ describe('tictac-models', function(){
 				expect(board[1][1]).toBe('whoop');
 			});
 		});
+
+		it('should have an clear method', function () {
+			expect(board.clear).toBeDefined();
+			expect(typeof(board.clear)).toBe('function');
+		});
+		describe('Board.clear', function () {
+			beforeEach(function() {
+				board[1][1] = "test";
+				board.clear();
+			})
+
+			it('should reset all values in a board to null', function () {
+				while(board.length){
+					var row = board.pop();
+					while(row.length)
+						expect(row.pop()).toBeNull();
+				}
+			});
+		});
 	});
 
 	it('has game', function() {
