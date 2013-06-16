@@ -1,15 +1,19 @@
 angular.module('tictac-services',['tictac-core'])
-	.factory('ComputerMove', function(CurrentGame, $http){
+	.value('$DataPromise', function(ajaxPromise) {
+		var handleResp = function(res) {return res.data;};
+		return ajaxPromise.then(handleResp);
+	})
+	.factory('ComputerMove', function($http, CurrentGame, $DataPromise){
 		var ComputerMoveFactory = function ComputerMoveFactory () {
-			return $http.post('/move', CurrentGame)
-				.then(function(res) {return res.data;});
+			var promise = $http.post('/move', CurrentGame);
+			return $DataPromise(promise);
 		};
 		return ComputerMoveFactory;
 	})
-	.factory('DetectWin', function($http, CurrentGame){
+	.factory('DetectWin', function($http, CurrentGame, $DataPromise){
 		var DetectWinFactory = function DetectWinFactory () {
-			return $http.post('/detect-win', CurrentGame)
-				.then(function(res) {return res.data});
+			var promise = $http.post('/detect-win', CurrentGame);
+			return $DataPromise(promise);
 		}
 		return DetectWinFactory;
 	});
