@@ -60,7 +60,9 @@ describe('tictac-services', function () {
 		beforeEach(inject(function(DetectWin) {
 			detectWin = DetectWin;
 			result = {some:"data"};
-			$httpBackend.expectPOST('/detect-win', game).respond(result);
+			$httpBackend.expectPOST('/detect-win', game).respond(function() {
+				return [200, result];
+			});
 		}));
 		afterEach(function () {
 			$httpBackend.flush();
@@ -71,6 +73,10 @@ describe('tictac-services', function () {
 		});
 		it('should send the CurrentGame', function () {
 			detectWin();
+		});
+		it('should filter stringified null', function () {
+			result = "null";
+			detectWin().then(function(d) {expect(d).toBeNull();})
 		});
 		it('should return the result', function () {
 			detectWin().then(function(d) {expect(d).toBe(result)});
@@ -136,6 +142,13 @@ describe('tictac-services', function () {
 			expect(game["last-turn"]).toBe(lastTurn);
 			expect(game["last-turn"].position).toBe(pos);
 			expect(game.turn).not.toBe(lastTurn);
+		});
+		it('should not allow moves once game is won', function () {
+			game.win = {"winning-row" : "somewhere"};
+			$makeMove(player, [2,3]);
+			expect(game.board.update).not.toHaveBeenCalled();
+			expect(game.turn.player).toBe(player);
+			expect(game['last-turn']).not.toBeDefined();
 		});
 	});
 	afterEach(function() {

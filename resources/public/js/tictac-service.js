@@ -15,15 +15,15 @@ angular.module('tictac-services',['tictac-core'])
 			var promise = $http.post('/detect-win', CurrentGame);
 			return $DataPromise(promise)
 				.then(function(d) {
-					CurrentGame.win = d;
-					return d;
+					CurrentGame.win = d === 'null' ? null : d;
+					return CurrentGame.win;
 				});
 		}
 		return DetectWinFactory;
 	})
 	.factory('$MakeMove', function(CurrentGame, Turn) {
 		var MakeMoveFactory = function MakeMoveFactory (player, pos) {
-			if (CurrentGame.turn.player == player)
+			if (CurrentGame.turn.player == player && !CurrentGame.win)
 				CurrentGame.board.update(player["game-piece"], pos);
 			else return;
 			CurrentGame.turn.position = pos;
