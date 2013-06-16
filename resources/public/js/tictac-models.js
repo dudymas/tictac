@@ -9,6 +9,13 @@ angular.module('tictac-models',[])
 		};
 		return Player;
 	})
+	.factory("Turn", function() {
+		var Turn = function Turn () {};
+		Turn.create = function() {
+			return {player: null};
+		};
+		return Turn;
+	})
 	.factory("Row", function() {
 		var Row = function Row () {};
 		Row.create = function(rowLength) {

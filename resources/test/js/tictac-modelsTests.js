@@ -9,7 +9,6 @@ describe('tictac-models', function(){
 			expect(Player).toBeDefined();
 		});
 	});
-
 	describe('player', function () {
 		var player;
 		var piece = "O";
@@ -28,6 +27,26 @@ describe('tictac-models', function(){
 			expect(player.type).toBe(type);
 		});
 	});
+
+	it('has turn', function () {
+		inject(function(Turn) {
+			expect(Turn).toBeDefined();
+		})
+	});
+	describe('turn', function () {
+		var turn;
+
+		beforeEach(function() {
+			inject(function(Turn) {
+				turn = Turn.create();
+			});
+		});
+
+		it('should have a player', function () {
+			expect(turn.player).toBeNull();
+		});
+	});
+
 	it('has board', function() {
 		inject(function(Board) {
 			expect(Board).toBeDefined();
@@ -55,6 +74,7 @@ describe('tictac-models', function(){
 				expect(board.pop().length).toBe(rowLength);
 		});
 	});
+
 	it('has game', function() {
 		inject(function(Game){
 			expect(Game).toBeDefined();
