@@ -47,9 +47,11 @@ describe('tictac-core', function () {
 			});
 		});
 	});
-	it('has CurrentBoard', function () {
+	it('has CurrentBoard in 3x3 configuration by default', function () {
 		inject(function(CurrentBoard){
 			expect(CurrentBoard).toBeDefined();
+			expect(CurrentBoard.length).toBe(3);
+			expect(CurrentBoard[0].length).toBe(3);
 		});
 	});
 	it('has CurrentGame', function () {
@@ -58,15 +60,29 @@ describe('tictac-core', function () {
 		});
 	});
 	describe('CurrentGame', function() {
-		it('has the current CurrentBoard', function() {
+		var game, board;
+		beforeEach(function() {
 			inject(function(CurrentBoard, CurrentGame) {
-				expect(CurrentGame.board).toBe(CurrentBoard);
+				game = CurrentGame;
+				board = CurrentBoard;
 			});
+		})
+
+		it('has the current CurrentBoard', function() {
+			expect(game.board).toBe(board);
 		});
 		it('has the current players', function() {
-			inject(function(Player1, Player2, CurrentGame) {
-				while(CurrentGame.players.length > 0)
-					expect([Player1, Player2]).toContain(CurrentGame.players.pop());
+			inject(function(Player1, Player2) {
+				while(game.players.length > 0)
+						expect([Player1, Player2]).toContain(game.players.pop());
+			});
+		});
+		it('has initialized the first turn', function () {
+			expect(game.turn).toBeDefined();
+		});
+		it('has made player1 the first player to take a turn', function () {
+			inject(function(Player1) {
+				expect(game.turn.player).toBe(Player1);
 			});
 		});
 	});
