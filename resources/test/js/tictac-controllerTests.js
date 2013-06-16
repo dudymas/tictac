@@ -2,6 +2,7 @@ describe('tictac-controllers', function () {
 	var game;
 	beforeEach(function() {
 		game = {board : [[null]], turn : {player: null}};
+		game.reset = jasmine.createSpy("'game reset'");
 		module('tictac-controllers', function($provide) {
 			var gameSpy = function() {
 				return game;
@@ -41,8 +42,25 @@ describe('tictac-controllers', function () {
 		})
 	});
 	describe('gameCtrl', function () {
+		var ctrl, scope;
+
+		beforeEach(function() {
+			inject(function($controller) {
+				scope = {};
+				ctrl = $controller('gameCtrl', {$scope: scope});
+			});
+		});
+
+		it('should add reset() to the scope', function () {
+			expect(scope.reset).toBeDefined();
+			expect(typeof(scope.reset)).toBe('function');
+		});
+		it('should call reset on game', function () {
+			scope.reset();
+			expect(game.reset).toHaveBeenCalled();
+		});
 	});
-	
+
 	it('has rowCtrl', function () {
 		inject(function($controller) {
 			var rowCtrl = $controller('rowCtrl', {$scope : {}});
