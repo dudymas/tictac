@@ -51,32 +51,32 @@ describe('tictac-services', function () {
 	it('has win detection service', function () {
 		inject(function(DetectWin){
 			expect(DetectWin).toBeDefined();
+			expect(typeof(DetectWin)).toBe('function');
 		});
 	});
 	describe('DetectWin', function() {
-		var detectWin;
+		var detectWin, result;
+
 		beforeEach(inject(function(DetectWin) {
 			detectWin = DetectWin;
+			result = {some:"data"};
+			$httpBackend.expectPOST('/detect-win', game).respond(result);
 		}));
-
-		it('should be a function', function () {
-			expect(typeof(detectWin)).toBe('function');
-		});
-		it('should POST to /detect-win', function () {
-			$httpBackend.expectPOST('/detect-win').respond(null);
-			detectWin();
+		afterEach(function () {
 			$httpBackend.flush();
+		});
+
+		it('should POST to /detect-win', function () {
+			detectWin();
 		});
 		it('should send the CurrentGame', function () {
-			$httpBackend.expectPOST('/detect-win', game).respond(null);
 			detectWin();
-			$httpBackend.flush();
 		});
 		it('should return the result', function () {
-			var result = {some:"data"};
-			$httpBackend.expectPOST('/detect-win', game).respond(result);
 			detectWin().then(function(d) {expect(d).toBe(result)});
-			$httpBackend.flush();
+		});
+		it('should put result in game.win', function () {
+			detectWin().then(function() {expect(game.win).toBe(result)});
 		});
 	});
 

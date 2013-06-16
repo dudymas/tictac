@@ -13,7 +13,11 @@ angular.module('tictac-services',['tictac-core'])
 	.factory('DetectWin', function($http, CurrentGame, $DataPromise){
 		var DetectWinFactory = function DetectWinFactory () {
 			var promise = $http.post('/detect-win', CurrentGame);
-			return $DataPromise(promise);
+			return $DataPromise(promise)
+				.then(function(d) {
+					CurrentGame.win = d;
+					return d;
+				});
 		}
 		return DetectWinFactory;
 	})
