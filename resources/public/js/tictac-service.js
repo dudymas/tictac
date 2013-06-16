@@ -17,9 +17,13 @@ angular.module('tictac-services',['tictac-core'])
 		}
 		return DetectWinFactory;
 	})
-	.factory('$MakeMove', function(CurrentGame) {
+	.factory('$MakeMove', function(CurrentGame, Turn) {
 		var MakeMoveFactory = function MakeMoveFactory (player, pos) {
-			CurrentGame.board.update(player["game-piece"], pos);
+			if (CurrentGame.turn.player == player)
+				CurrentGame.board.update(player["game-piece"], pos);
+			CurrentGame.turn = Turn.create();
+			CurrentGame.turn.player = 
+				player == CurrentGame.players[0] ? CurrentGame.players[1] : CurrentGame.players[0];
 		};
 		return MakeMoveFactory;
 	});

@@ -86,14 +86,18 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('$MakeMove', function () {
-		var $makeMove, player, position;
+		var $makeMove, player, position, computer, computerMove;
 
 		beforeEach(function() {
-			inject(function($MakeMove) {
+			inject(function($MakeMove, ComputerMove) {
 				$makeMove = $MakeMove;
+				computerMove = ComputerMove;
 			});
 			player = {"game-piece": '\m/'};
+			computer = {type : 'computer'};
+			game.turn = {player: player};
 			position = [2,5, 3]; //yay, 3d!
+			game.players = [player, computer];
 		});
 
 		it('should use CurrentGame', function () {
@@ -111,8 +115,15 @@ describe('tictac-services', function () {
 			$makeMove(player, position);
 			expect(game.board.update.mostRecentCall.args[1]).toBe(position);
 		});
-		it('should not allow moves out of turn', function () {});
-		it('should give computer players a turn', function () {});
+		it('should not allow moves out of turn', function () {
+			game.turn = { player : {some: "otherperson"} };
+			$makeMove(player);
+			expect(game.board.update).not.toHaveBeenCalled();
+		});
+		it('should give next player a turn', function () {
+			$makeMove(player);
+			expect(game.turn.player).toBe(computer);
+		});
 	});
 	afterEach(function() {
 	  $httpBackend.verifyNoOutstandingExpectation();
