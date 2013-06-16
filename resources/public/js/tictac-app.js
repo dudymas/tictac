@@ -1,0 +1,1 @@
+angular.module('tictac-app',['tictac-core', 'tictac-services', 'tictac-controllers']);
