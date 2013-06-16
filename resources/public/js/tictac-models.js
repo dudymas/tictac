@@ -63,6 +63,7 @@ angular.module('tictac-models',[])
 			this.board.clear();
 			this.turn = Turn.create();
 			this.turn.player = this.players[0];
+			this.win = null;
 		};
 		return Game;
 	});

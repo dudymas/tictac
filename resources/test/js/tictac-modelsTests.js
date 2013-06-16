@@ -146,6 +146,7 @@ describe('tictac-models', function(){
 		});
 		describe('Game.reset', function () {
 			beforeEach(function () {
+				game.win = {some: "win" };
 				game.turn = {player: "test"};
 				game.players = ["first player", "second player"];
 				game.board.clear = jasmine.createSpy("'clear board'");
@@ -157,6 +158,9 @@ describe('tictac-models', function(){
 			});
 			it('should revert the game.turn to first player', function () {
 				expect(game.turn.player).toBe(game.players[0]);
+			});
+			it('should clear any winning data', function () {
+				expect(game.win).not.toBeTruthy();
 			});
 		});
 	});
