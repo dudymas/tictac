@@ -33,4 +33,31 @@ describe('tictac-controllers', function () {
 			expect(scope.turn).toBe(game.turn);
 		});
 	});
+
+	it('has gameCtrl', function () {
+		inject(function($controller) {
+			var gameCtrl = $controller('gameCtrl', {$scope : {}});
+			expect(gameCtrl).toBeDefined();
+		})
+	});
+	describe('gameCtrl', function () {
+	});
+	
+	it('has rowCtrl', function () {
+		inject(function($controller) {
+			var rowCtrl = $controller('rowCtrl', {$scope : {}});
+			expect(rowCtrl).toBeDefined();
+		})
+	});
+	describe('rowCtrl', function () {
+	});
+
+	it('has winIndicatorCtrl', function () {
+		inject(function($controller) {
+			var winIndicatorCtrl = $controller('winIndicatorCtrl', {$scope : {}});
+			expect(winIndicatorCtrl).toBeDefined();
+		})
+	});
+	describe('winIndicatorCtrl', function () {
+	});
 });
