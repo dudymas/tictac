@@ -41,7 +41,7 @@ angular.module('tictac-models',[])
 		};
 		return Board;
 	})
-	.factory("Game", function() {
+	.factory("Game", function(Turn) {
 		var Game = function Game () {};
 		Game.create = function(players, board) {
 			var result = new Game();
@@ -50,6 +50,11 @@ angular.module('tictac-models',[])
 				result.players.push(players[playerIdx]);
 			result.board = board;
 			return result;
+		};
+		Game.prototype.reset = function() {
+			this.board.clear();
+			this.turn = Turn.create();
+			this.turn.player = this.players[0];
 		};
 		return Game;
 	});

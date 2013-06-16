@@ -121,5 +121,24 @@ describe('tictac-models', function(){
 		it('should contain the board that was specified', function () {
 			expect(game.board).toBe(board);
 		});
+		it('should have reset()', function () {
+			expect(game.reset).toBeDefined();
+			expect(typeof(game.reset)).toBe('function');
+		});
+		describe('Game.reset', function () {
+			beforeEach(function () {
+				game.turn = {player: "test"};
+				game.players = ["first player", "second player"];
+				game.board.clear = jasmine.createSpy("'clear board'");
+				game.reset();
+			});
+
+			it('should clear the game board', function () {
+				expect(game.board.clear).toHaveBeenCalled();
+			});
+			it('should revert the game.turn to first player', function () {
+				expect(game.turn.player).toBe(game.players[0]);
+			});
+		});
 	});
 });
