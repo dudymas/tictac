@@ -10,5 +10,6 @@ pom.xml.asc
 .lein-failures
 .lein-plugins
 .lein-repl-history
-
+resources/*/js/*.html
+resources/test/coverage
 *.log

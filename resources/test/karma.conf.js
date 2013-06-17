@@ -1,10 +1,11 @@
 // Karma configuration
 // Generated on Sun Jun 02 2013 17:25:57 GMT-0400 (EDT)
-
+preprocessors = {
+  '../public/js/tictac-*.js': 'coverage'
+};
 
 // base path, that will be used to resolve files and exclude
 basePath = '';
-
 
 // list of files / patterns to load in the browser
 files = [
@@ -25,7 +26,7 @@ exclude = [
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['progress', 'coverage'];
 
 
 // web server port
