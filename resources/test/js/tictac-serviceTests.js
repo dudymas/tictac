@@ -55,11 +55,12 @@ describe('tictac-services', function () {
 		});
 	});
 	describe('DetectWin', function() {
-		var detectWin, result;
+		var detectWin, result, direction;
 
 		beforeEach(inject(function(DetectWin) {
 			detectWin = DetectWin;
-			result = {some:"data"};
+			result = {some:"data", "winning-row" : "thedir-ordinal-idx"};
+			direction = "thedir";
 			$httpBackend.expectPOST('/detect-win', game).respond(function() {
 				return [200, result];
 			});
@@ -83,6 +84,11 @@ describe('tictac-services', function () {
 		});
 		it('should put result in game.win', function () {
 			detectWin().then(function() {expect(game.win).toBe(result)});
+		});
+		it('should add direction to game.win', function() {
+			detectWin().then(function() {
+				expect(game.win.direction).toBe(direction);
+			});
 		});
 	});
 

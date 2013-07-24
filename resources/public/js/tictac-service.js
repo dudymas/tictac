@@ -16,6 +16,10 @@ angular.module('tictac-services',['tictac-core'])
 			return $DataPromise(promise)
 				.then(function(d) {
 					CurrentGame.win = d === 'null' ? null : d;
+					if ( CurrentGame.win && CurrentGame.win["winning-row"]) {
+						winningRowString = CurrentGame.win["winning-row"];
+						CurrentGame.win.direction = winningRowString.split('-')[0];
+					}
 					return CurrentGame.win;
 				});
 		}
