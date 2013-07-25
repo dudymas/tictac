@@ -8,18 +8,12 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.5"]
                  [org.clojure/data.json "0.2.1"]]
-                 ;[hiccups "0.2.0"]
-                 ;[domina "1.0.2-SNAPSHOT"]
-                 ;[com.cemerick/valip "0.3.2"]
-                 ;[shoreleave/shoreleave-remote-ring "0.3.0"]
-                 ;[shoreleave/shoreleave-remote "0.3.0"]
 
   :profiles {
     :dev {
       :dependencies [[speclj "2.5.0"]]}}
 
-  :plugins [;[lein-cljsbuild "0.3.0"]
-            [lein-ring "0.8.3"]
+  :plugins [[lein-ring "0.8.3"]
             [speclj "2.5.0"]]
   :test-paths ["spec/"]
   :main tictac.cli
