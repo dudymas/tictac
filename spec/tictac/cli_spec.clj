@@ -10,7 +10,6 @@
       (fn [& args]
         (let [result (first @results)]
           (swap! results rest)
-          (println result)
           result)))
     (fn [& args] (println inp) inp)))
 
@@ -50,6 +49,8 @@
 
 (describe "CLI"
   (tags :cli)
+
+  (around [it] (with-redefs [println #(do % nil)] (it)))
 
   (context "display-board"
     (it "displays the game board"
