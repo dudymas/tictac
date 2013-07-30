@@ -1,9 +1,6 @@
 (ns tictac.core
   (:use tictac.board))
 
-(keyword :X)
-(keyword :O)
-
 (defn create-board
   "Create a game board, which is a vector of rows. Each row is a horizontal row on the board."
   []

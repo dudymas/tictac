@@ -1,5 +1,7 @@
 (ns tictac.board)
 
+(def computer-default-piece :X)
+
 (defn board-filled
   "Detects if the game is over"
   [game-board]

@@ -5,7 +5,7 @@
   "Returns :threat if a row is a threat to the given piece.
    Returns :win if winning. Else nil"
   ([row]
-    (if (= :contested (get-row-status row :O))
+    (if (= :contested (get-row-status row computer-default-piece))
       :contested)) ;;this can only be good for just getting contested rows
   ([row piece]
     (let [current-pieces (set (filter #(not(nil? %)) row))
